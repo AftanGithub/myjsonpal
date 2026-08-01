@@ -9,11 +9,14 @@ interface NavbarProps {
 }
 
 const LINKS = [
-  { href: '/', label: 'Formatter & Validator' },
-  { href: '/json-to-csv', label: 'CSV Converter' },
-  { href: '/json-to-yaml', label: 'YAML Converter' },
-  { href: '/json-to-typescript', label: 'TypeScript Types' },
-  { href: '/minify-json', label: 'Minifier' },
+  { href: '/', label: 'Formatter' },
+  { href: '/json-to-csv', label: 'CSV' },
+  { href: '/csv-to-json', label: 'CSV to JSON' },
+  { href: '/json-to-yaml', label: 'YAML' },
+  { href: '/yaml-to-json', label: 'YAML to JSON' },
+  { href: '/json-to-typescript', label: 'TS Types' },
+  { href: '/json-to-zod', label: 'Zod Schema' },
+  { href: '/minify-json', label: 'Minify' },
 ];
 
 export default function Navbar({ pathname }: NavbarProps) {
@@ -54,19 +57,25 @@ export default function Navbar({ pathname }: NavbarProps) {
     <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/85 backdrop-blur-md">
       <nav className="container-site flex h-14 items-center justify-between gap-4">
         <a href="/" className="flex shrink-0 items-center gap-2" aria-label="MyJSONPal home">
-          <img src={logo.src} alt="" className="h-7 w-7" width={128} height={128} />
+          <img
+            src={logo.src}
+            alt="MyJSONPal logo"
+            className="h-7 w-7"
+            width={128}
+            height={128}
+          />
           <span className="text-[15px] font-semibold tracking-tight text-ink">
             myjson<span className="text-mute">pal</span>
           </span>
         </a>
 
-        <div className="hidden items-center gap-0.5 lg:flex">
+        <div className="hidden items-center gap-0.5 xl:flex">
           {LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
               aria-current={isActive(link.href) ? 'page' : undefined}
-              className={`rounded-full px-3 py-1.5 text-sm transition-colors duration-150 ${
+              className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors duration-150 ${
                 isActive(link.href)
                   ? 'font-medium text-ink'
                   : 'text-body hover:bg-elevated-2 hover:text-ink'
@@ -125,7 +134,7 @@ export default function Navbar({ pathname }: NavbarProps) {
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="btn-icon lg:hidden"
+            className="btn-icon xl:hidden"
             aria-expanded={open}
             aria-label="Toggle navigation menu"
           >
@@ -139,7 +148,7 @@ export default function Navbar({ pathname }: NavbarProps) {
       </nav>
 
       {open && (
-        <div className="border-t border-hairline bg-canvas lg:hidden">
+        <div className="border-t border-hairline bg-canvas xl:hidden">
           <div className="container-site flex flex-col gap-1 py-3">
             {LINKS.map((link) => (
               <a

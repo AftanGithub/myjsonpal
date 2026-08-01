@@ -1,0 +1,68 @@
+---
+import StaticPage from '@/layouts/StaticPage.astro';
+import { SITE } from '@/config/site';
+import { TOOL_LIST } from '@/config/tools';
+---
+
+<StaticPage
+  eyebrow="Company"
+  h1="About MyJSONPal"
+  lead="A privacy-first, in-browser JSON & data studio built for developers who value speed and privacy."
+  metaTitle="About MyJSONPal | Privacy-First JSON Tools"
+  metaDescription="Learn about MyJSONPal — a free, privacy-first, in-browser JSON formatter, validator, and converter suite. No uploads, no servers, no accounts."
+  keywords={['about myjsonpal', 'json formatter', 'privacy first json tool', 'json studio', 'free json tools']}
+  path="/about"
+  updated="August 1, 2026"
+>
+  <h2 id="mission">Our mission</h2>
+  <p>
+    JSON is everywhere — API responses, config files, build pipelines, data exports. Yet most
+    online tools for working with it upload your data to a remote server you don't control.
+    MyJSONPal exists to give developers a fast, capable JSON studio that respects one
+    non-negotiable rule: <strong>your data stays on your machine</strong>.
+  </p>
+
+  <h2 id="why-we-built-it">Why we built it</h2>
+  <p>
+    Working with JSON usually means juggling half a dozen tabs and pasting sensitive payloads
+    into third-party websites. We wanted a single place that could format, validate,
+    auto-repair, minify, and convert JSON — with a clean interface, instant results, and
+    complete privacy. Everything here runs in your browser through a Web Worker, so even
+    multi-megabyte documents are processed quickly without freezing the page.
+  </p>
+
+  <h2 id="what-we-offer">What MyJSONPal offers</h2>
+  <ul>
+    {
+      TOOL_LIST.map((tool) => (
+        <li>
+          <a href={tool.path}>{tool.h1}</a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2 id="privacy">Privacy by design</h2>
+  <p>
+    Privacy isn't a feature we bolt on — it's the foundation of the product. There are no
+    accounts, no sign-ups, no usage quotas, and no telemetry that sees your content. Paste,
+    work, close the tab, and it's gone.
+  </p>
+
+  <h2 id="free-forever">Free forever</h2>
+  <p>
+    All tools on MyJSONPal are free to use without limits or registration. The project is
+    maintained by a small independent developer who believes developer utilities should be
+    open, fast, and private by default.
+  </p>
+
+  <h2 id="get-in-touch">Get in touch</h2>
+  <p>
+    Feedback, feature requests, or bug reports? We'd love to hear from you via our{' '}
+    <a href="/contact">contact page</a>, or{' '}
+    <a href={SITE.github} target="_blank" rel="noopener noreferrer">
+      follow development on GitHub
+    </a>
+    .
+  </p>
+</StaticPage>

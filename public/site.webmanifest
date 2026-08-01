@@ -1,8 +1,12 @@
 {
+  "id": "/",
   "name": "MyJSONPal",
   "short_name": "MyJSONPal",
   "description": "The Privacy-First, In-Browser JSON & Data Studio",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

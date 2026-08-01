@@ -4,6 +4,7 @@ export const SITE = {
   domain: 'myjsonpal.com',
   tagline: 'The Privacy-First, In-Browser JSON & Data Studio',
   github: 'https://github.com/AftanGithub',
+  email: 'aftandevelops@gmail.com',
   showAds: false,
   description:
     'Free online JSON formatter, validator and converter. 100% client-side — no uploads, no servers, fully private. Format, fix, minify and convert JSON to CSV, YAML, TypeScript and SQL right in your browser.',

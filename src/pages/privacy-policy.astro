@@ -1,0 +1,91 @@
+---
+import StaticPage from '@/layouts/StaticPage.astro';
+import { SITE } from '@/config/site';
+---
+
+<StaticPage
+  eyebrow="Legal"
+  h1="Privacy Policy"
+  lead="Your data never leaves your device. Here's how MyJSONPal protects your privacy."
+  metaTitle="Privacy Policy | MyJSONPal"
+  metaDescription="MyJSONPal processes everything in your browser — no accounts, no data collection, no servers. Your JSON never leaves your device. Read our privacy policy."
+  keywords={['privacy policy', 'json privacy', 'client side privacy', 'no data upload', 'json data protection']}
+  path="/privacy-policy"
+  updated="August 1, 2026"
+>
+  <h2 id="overview">Overview</h2>
+  <p>
+    MyJSONPal is built around a single promise: <strong>your data stays on your device</strong>.
+    All tools — formatting, validation, auto-repair, minification, and every conversion — run
+    entirely in your browser using JavaScript and Web Workers. There are no application servers
+    that receive, process, store, or log the JSON you work with.
+  </p>
+  <p>
+    This policy explains what little information the site uses, why it is used, and the choices
+    you have. If you have questions, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+  </p>
+
+  <h2 id="what-we-never-see">What we never see</h2>
+  <ul>
+    <li>
+      <strong>Your JSON data.</strong> Input, intermediate, and output content is processed
+      locally and is never transmitted over the network.
+    </li>
+    <li>
+      <strong>File contents.</strong> When you drag and drop a file, it is read directly by your
+      browser and never uploaded.
+    </li>
+    <li>
+      <strong>Account credentials.</strong> There are no accounts, no sign-ups, and no
+      passwords on MyJSONPal.
+    </li>
+  </ul>
+
+  <h2 id="what-we-do-use">What we do use</h2>
+  <p>The only data the site touches is minimal and non-identifying:</p>
+  <ul>
+    <li>
+      <strong>Theme preference.</strong> Your light/dark theme choice is stored in your
+      browser's <code>localStorage</code> so it persists between visits. It never leaves your
+      device.
+    </li>
+    <li>
+      <strong>Page hosting logs.</strong> Like any website, the hosting provider may keep
+      standard, short-lived server logs (IP address, requested URL, browser type) for security
+      and reliability. These are not linked to your JSON activity.
+    </li>
+  </ul>
+
+  <h2 id="cookies-and-ads">Cookies and advertising</h2>
+  <p>
+    MyJSONPal does not set cookies for its own functionality. If advertising is enabled on
+    the site, third-party ad networks such as Google AdSense may use cookies or similar
+    technologies to serve relevant ads. These are controlled by the ad provider, not by
+    MyJSONPal, and you can opt out via your browser settings or Google's Ad Settings.
+  </p>
+
+  <h2 id="third-parties">Third-party links</h2>
+  <p>
+    The site links to external resources (such as our GitHub profile). Those destinations have
+    their own privacy policies and data practices, which we do not control.
+  </p>
+
+  <h2 id="children">Children's privacy</h2>
+  <p>
+    MyJSONPal is a developer tool and is not directed at children under 13. Because we do not
+    collect personal information, there is nothing that would knowingly identify a child.
+  </p>
+
+  <h2 id="changes">Changes to this policy</h2>
+  <p>
+    We may update this policy as the site evolves. Material changes will be reflected by an
+    updated "Last updated" date at the top of this page. Continued use of the site after changes
+    means you accept the revised policy.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Questions about this policy or your privacy? Reach out at{' '}
+    <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+  </p>
+</StaticPage>

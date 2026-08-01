@@ -1,0 +1,52 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@/styles/global.css';
+import SEO from '@/components/SEO.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  path?: string;
+  ogImageAlt?: string;
+  noindex?: boolean;
+}
+
+const { title, description, keywords, path = '/', ogImageAlt, noindex = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <script is:inline>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          document.documentElement.classList.toggle('dark', theme !== 'light');
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SEO
+      title={title}
+      description={description}
+      keywords={keywords}
+      path={path}
+      ogImageAlt={ogImageAlt}
+      noindex={noindex}
+    />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0a0a0a" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <slot />
+  </body>
+</html>

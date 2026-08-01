@@ -1,0 +1,123 @@
+---
+import { SITE } from '@/config/site';
+import type { ToolConfig } from '@/config/tools';
+
+interface Props {
+  tool?: ToolConfig;
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  path?: string;
+  ogImageAlt?: string;
+  noindex?: boolean;
+}
+
+const {
+  tool,
+  title,
+  description,
+  keywords,
+  path = '/',
+  ogImageAlt,
+  noindex = false,
+} = Astro.props;
+
+const canonical = `${SITE.url}${path}`.replace(/\/+$/, '');
+const metaTitle = tool ? tool.metaTitle : (title ?? SITE.name);
+const metaDescription = tool ? tool.metaDescription : (description ?? SITE.description);
+const metaKeywords = tool ? tool.keywords : (keywords ?? []);
+const metaImageAlt = ogImageAlt ?? (tool ? tool.h1 : SITE.name);
+const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+const ogImage = `${SITE.url}/images/og-share.png`;
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#website`,
+  url: SITE.url,
+  name: SITE.name,
+  description: SITE.description,
+  inLanguage: 'en',
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+  },
+};
+
+const applicationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': `${SITE.url}/#application`,
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'All',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+
+const toolSchema = tool
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      '@id': `${canonical}#tool`,
+      name: tool.h1,
+      url: canonical,
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'All',
+      browserRequirements: 'Requires JavaScript',
+      description: metaDescription,
+      keywords: tool.keywords.join(', '),
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      featureList: [
+        '100% client-side processing in your browser',
+        'No file uploads — data never leaves the device',
+        'Free forever with no accounts',
+      ],
+    }
+  : null;
+
+const faqSchema = tool
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      '@id': `${canonical}#faq`,
+      mainEntity: tool.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: { '@type': 'Answer', text: faq.a },
+      })),
+    }
+  : null;
+
+const jsonLd = [websiteSchema, applicationSchema, toolSchema, faqSchema]
+  .filter(Boolean)
+  .map((schema) => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`)
+  .join('\n');
+---
+
+<title>{metaTitle}</title>
+<meta name="description" content={metaDescription} />
+{metaKeywords.length > 0 && <meta name="keywords" content={metaKeywords.join(', ')} />}
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="MyJSONPal" />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={metaImageAlt} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={metaTitle} />
+<meta name="twitter:description" content={metaDescription} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={metaImageAlt} />
+
+<Fragment set:html={jsonLd} />

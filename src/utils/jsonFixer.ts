@@ -54,7 +54,7 @@ function convertSingleQuotes(text: string): { text: string; changes: string[] } 
   let count = 0;
   const converted = text.replace(
     /'((?:\\.|[^'\\])*)'/g,
-    (match: string, inner: string) => {
+    (_, inner) => {
       count += 1;
       return '"' + inner.replace(/\\'/g, "'").replace(/"/g, '\\"') + '"';
     },
@@ -73,7 +73,7 @@ function quoteUnquotedKeys(text: string): { text: string; changes: string[] } {
   let count = 0;
   const quoted = text.replace(
     /([{,]\s*)([A-Za-z_$][\w$-]*)(\s*:)/g,
-    (match: string, pre: string, key: string, colon: string) => {
+    (_, pre, key, colon) => {
       count += 1;
       return `${pre}"${key}"${colon}`;
     },
@@ -88,7 +88,7 @@ function quoteUnquotedKeys(text: string): { text: string; changes: string[] } {
 function removeTrailingCommas(text: string): { text: string; changes: string[] } {
   const changes: string[] = [];
   let count = 0;
-  const cleaned = text.replace(/,\s*([}\]])/g, (match: string, close: string) => {
+  const cleaned = text.replace(/,\s*([}\]])/g, (_, close) => {
     count += 1;
     return close;
   });

@@ -8,18 +8,34 @@ const RESOURCE_LINKS = [
   { href: '/fix-json', label: 'Fix Broken JSON' },
   { href: '/minify-json', label: 'Minify JSON' },
   { href: '/json-to-csv', label: 'JSON to CSV' },
+  { href: '/csv-to-json', label: 'CSV to JSON' },
   { href: '/json-to-yaml', label: 'JSON to YAML' },
+  { href: '/yaml-to-json', label: 'YAML to JSON' },
   { href: '/json-to-typescript', label: 'JSON to TypeScript' },
+  { href: '/json-to-zod', label: 'JSON to Zod Schema' },
+];
+
+const COMPANY_LINKS = [
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact Us' },
+  { href: '/privacy-policy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms & Conditions' },
 ];
 
 export default function Footer() {
   return (
     <footer className="border-t border-hairline bg-canvas">
       <div className="container-site py-12">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <a href="/" className="flex items-center gap-2" aria-label="MyJSONPal home">
-              <img src={logo.src} alt="" className="h-7 w-7" width={128} height={128} />
+              <img
+                src={logo.src}
+                alt="MyJSONPal logo"
+                className="h-7 w-7"
+                width={128}
+                height={128}
+              />
               <span className="text-[15px] font-semibold tracking-tight text-ink">myjsonpal</span>
             </a>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-body">
@@ -72,6 +88,22 @@ export default function Footer() {
                   Developer on GitHub
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="eyebrow">Company</h3>
+            <ul className="mt-4 space-y-2.5">
+              {COMPANY_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-body transition-colors hover:text-ink"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

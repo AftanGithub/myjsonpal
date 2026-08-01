@@ -192,7 +192,41 @@
     @apply inline-flex h-9 w-9 select-none items-center justify-center rounded-sm border border-hairline bg-elevated text-body transition-colors duration-150 hover:bg-elevated-2 hover:text-ink active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40;
   }
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-hairline bg-elevated px-3 py-1 text-xs font-medium text-mute;
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-hairline bg-elevated px-3 py-1 text-xs font-medium text-mute;
+  }
+  .static-prose {
+    @apply text-[15px] leading-relaxed text-body;
+  }
+  .static-prose h2 {
+    @apply mt-10 scroll-mt-24 text-2xl font-semibold tracking-tight text-ink;
+  }
+  .static-prose h3 {
+    @apply mt-6 scroll-mt-24 text-lg font-semibold tracking-tight text-ink;
+  }
+  .static-prose p {
+    @apply mt-4;
+  }
+  .static-prose ul,
+  .static-prose ol {
+    @apply mt-4 space-y-2 pl-5;
+  }
+  .static-prose ul {
+    @apply list-disc;
+  }
+  .static-prose ol {
+    @apply list-decimal;
+  }
+  .static-prose a {
+    @apply text-accent underline underline-offset-2 transition-colors hover:text-accent-strong;
+  }
+  .static-prose strong {
+    @apply font-medium text-ink;
+  }
+  .static-prose code {
+    @apply rounded-sm bg-elevated-2 px-1.5 py-0.5 font-mono text-[13px] text-ink;
+  }
+  .static-prose hr {
+    @apply my-8 border-hairline;
   }
 }
 

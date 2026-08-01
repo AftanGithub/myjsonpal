@@ -1,0 +1,39 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+interface Props {
+  eyebrow: string;
+  h1: string;
+  lead: string;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string[];
+  path: string;
+  updated?: string;
+}
+
+const { eyebrow, h1, lead, metaTitle, metaDescription, keywords, path, updated } = Astro.props;
+---
+
+<Layout title={metaTitle} description={metaDescription} keywords={keywords} path={path}>
+  <section class="mesh-hero relative overflow-hidden border-b border-hairline">
+    <div class="container-site relative py-14 text-center lg:py-20">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+        {h1}
+      </h1>
+      {lead && (
+        <p class="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-body sm:text-base">
+          {lead}
+        </p>
+      )}
+      {updated && <p class="mt-4 font-mono text-xs uppercase tracking-wide text-mute">Last updated: {updated}</p>}
+    </div>
+  </section>
+
+  <article class="container-site py-12 lg:py-16">
+    <div class="static-prose mx-auto max-w-3xl">
+      <slot />
+    </div>
+  </article>
+</Layout>

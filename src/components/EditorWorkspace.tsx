@@ -23,6 +23,7 @@ import {
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import {
   ArrowDownUp,
+  ArrowLeftRight,
   Braces,
   Check,
   ChevronDown,
@@ -53,19 +54,32 @@ const EXT: Record<OutputFormat, string> = {
   json: 'json',
   minified: 'min.json',
   csv: 'csv',
+  csvjson: 'json',
   yaml: 'yaml',
+  yamljson: 'json',
   typescript: 'ts',
+  zod: 'ts',
   sql: 'sql',
 };
 
 const FORMAT_OPTIONS: { value: OutputFormat; label: string }[] = [
   { value: 'json', label: 'JSON · Formatted' },
   { value: 'minified', label: 'JSON · Minified' },
-  { value: 'csv', label: 'CSV' },
-  { value: 'yaml', label: 'YAML' },
-  { value: 'typescript', label: 'TypeScript' },
-  { value: 'sql', label: 'SQL' },
+  { value: 'csv', label: 'JSON ➔ CSV' },
+  { value: 'csvjson', label: 'CSV ➔ JSON' },
+  { value: 'yaml', label: 'JSON ➔ YAML' },
+  { value: 'yamljson', label: 'YAML ➔ JSON' },
+  { value: 'typescript', label: 'JSON ➔ TypeScript' },
+  { value: 'zod', label: 'JSON ➔ Zod Schema' },
+  { value: 'sql', label: 'JSON ➔ SQL' },
 ];
+
+const INVERSE: Partial<Record<OutputFormat, OutputFormat>> = {
+  csv: 'csvjson',
+  csvjson: 'csv',
+  yaml: 'yamljson',
+  yamljson: 'yaml',
+};
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -78,6 +92,16 @@ function kindFor(format: OutputFormat): TaskKind {
   if (format === 'json') return 'format';
   return 'convert';
 }
+
+const CONVERT_LABELS: Partial<Record<OutputFormat, string>> = {
+  csv: 'Convert to CSV',
+  csvjson: 'Convert to JSON',
+  yaml: 'Convert to YAML',
+  yamljson: 'Convert to JSON',
+  typescript: 'Convert to TS',
+  zod: 'Convert to Zod',
+  sql: 'Convert to SQL',
+};
 
 export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   const tool: ToolConfig = TOOLS[toolId];
@@ -94,10 +118,31 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   const [dragOver, setDragOver] = useState(false);
   const [tableName, setTableName] = useState('records');
   const [outputLang, setOutputLang] = useState<Extension | undefined>(undefined);
+  const [inputLang, setInputLang] = useState<Extension | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const canTree = format === 'json' || format === 'minified';
+  const canTree = format === 'json' || format === 'minified' || format === 'csvjson' || format === 'yamljson';
   const effectiveView = canTree ? viewMode : 'raw';
+  const isConverter = kindFor(tool.defaultFormat) === 'convert';
+  const isCsvInput = format === 'csvjson';
+  const isYamlInput = format === 'yamljson';
+  const isNonJsonInput = isCsvInput || isYamlInput;
+  const isConvertFormat = format !== 'json' && format !== 'minified';
+  const primarySpec = isConvertFormat
+    ? {
+        label: CONVERT_LABELS[format] ?? 'Convert',
+        title: `Convert the input to ${(CONVERT_LABELS[format] ?? '').replace('Convert to ', '')}`,
+        icon: ArrowDownUp,
+      }
+    : format === 'json'
+      ? { label: 'Format', title: 'Pretty-print JSON', icon: Braces }
+      : { label: 'Minify', title: 'Compress JSON', icon: Minimize2 };
+  const disabledFormats =
+    isCsvInput
+      ? new Set<OutputFormat>(FORMAT_OPTIONS.filter((o) => o.value !== 'csvjson').map((o) => o.value))
+      : isYamlInput
+        ? new Set<OutputFormat>(FORMAT_OPTIONS.filter((o) => o.value !== 'yamljson').map((o) => o.value))
+        : new Set<OutputFormat>(['csvjson', 'yamljson']);
 
   const process = useCallback(
     async (
@@ -125,12 +170,22 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
         if (res.input !== undefined) setInput(res.input);
         if (res.output !== undefined) setOutput(res.output);
         setValid(res.valid !== false);
+        const changesSummary =
+          res.changes && res.changes.length ? res.changes.join(' · ') : null;
         if (res.valid === false) {
           setError(res.error ?? 'The input still contains syntax errors.');
+        } else if (changesSummary) {
+          setMessage(`✓ ${changesSummary}`);
+        } else if (res.message) {
+          setMessage(`✓ ${res.message}`);
+        } else if (fmt === 'json') {
+          setMessage('✓ Formatted');
+        } else if (fmt === 'minified') {
+          setMessage('✓ Minified');
+        } else {
+          const target = (CONVERT_LABELS[fmt] ?? 'target format').replace('Convert to ', '');
+          setMessage(`✓ Converted to ${target}`);
         }
-        const summary =
-          res.changes && res.changes.length ? res.changes.join(' · ') : res.message;
-        setMessage(summary ? `✓ ${summary}` : 'Done');
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
       } finally {
@@ -157,16 +212,18 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   }, [runDefault, tool.sample]);
 
   useEffect(() => {
+    setInputLang(undefined);
+    setOutputLang(undefined);
     if (format === 'yaml') {
       import('@codemirror/lang-yaml').then((m) => setOutputLang(m.yaml()));
+    } else if (format === 'yamljson') {
+      import('@codemirror/lang-yaml').then((m) => setInputLang(m.yaml()));
     } else if (format === 'sql') {
       import('@codemirror/lang-sql').then((m) => setOutputLang(m.sql()));
-    } else if (format === 'typescript') {
+    } else if (format === 'typescript' || format === 'zod') {
       import('@codemirror/lang-javascript').then((m) =>
         setOutputLang(m.javascript({ typescript: true, jsx: false })),
       );
-    } else {
-      setOutputLang(undefined);
     }
   }, [format]);
 
@@ -183,6 +240,15 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   const handleFormatChange = (next: OutputFormat) => {
     setFormat(next);
     process(kindFor(next), undefined, next);
+  };
+
+  const handleSwap = () => {
+    const inv = INVERSE[format];
+    if (!inv || !output) return;
+    const swappedInput = output;
+    setInput(swappedInput);
+    setFormat(inv);
+    process(kindFor(inv), swappedInput, inv);
   };
 
   const handlePaste = async () => {
@@ -291,21 +357,29 @@ const minimalSetup = [
   keymap.of([...defaultKeymap, ...historyKeymap, ...foldKeymap, indentWithTab]),
 ];
 
-  const inputExtensions = useMemo(
-    () => [
+  const inputExtensions = useMemo(() => {
+    const lang =
+      format === 'csvjson' ? undefined : format === 'yamljson' ? inputLang : json();
+    const linterExt =
+      format === 'csvjson' || format === 'yamljson' ? undefined : linter(jsonParseLinter());
+    return [
       editorTheme,
-      json(),
-      linter(jsonParseLinter()),
+      lang,
+      linterExt,
       editorHighlight,
       EditorView.lineWrapping,
       ...minimalSetup,
-    ],
-    [],
-  );
+    ].filter((e): e is Extension => Boolean(e));
+  }, [format, inputLang]);
 
   const outputExtensions = useMemo(() => {
     const lang =
-      format === 'json' || format === 'minified' ? json() : outputLang;
+      format === 'json' ||
+      format === 'minified' ||
+      format === 'csvjson' ||
+      format === 'yamljson'
+        ? json()
+        : outputLang;
     return [
       editorTheme,
       lang,
@@ -393,18 +467,41 @@ const minimalSetup = [
               value={input}
               onChange={(value) => setInput(value)}
               extensions={inputExtensions}
-              placeholder="Paste your JSON here, or drag & drop a .json file…"
+              placeholder={
+                format === 'csvjson'
+                  ? 'Paste your CSV here, or drag & drop a .csv file…'
+                  : format === 'yamljson'
+                    ? 'Paste your YAML here, or drag & drop a .yaml file…'
+                    : 'Paste your JSON here, or drag & drop a .json file…'
+              }
             />
           </div>
         </div>
 
         {/* -------------------------- Middle control bar ------------------------ */}
         <div className="flex flex-row flex-wrap items-center justify-center gap-2 border-b border-hairline bg-canvas px-3 py-2.5 lg:w-44 lg:flex-col lg:border-b-0 lg:border-x lg:py-4">
-          {toolButton(handleFix, 'Auto-Fix', 'Repair common JSON syntax errors', Wand2, {
-            primary: true,
-          })}
-          {toolButton(handleFormat, 'Format', 'Pretty-print JSON', Braces)}
-          {toolButton(handleMinify, 'Minify', 'Compress JSON', Minimize2)}
+          {isConverter &&
+            toolButton(
+              () => process(kindFor(format), undefined, format),
+              primarySpec.label,
+              primarySpec.title,
+              primarySpec.icon,
+              { primary: true },
+            )}
+          {!isNonJsonInput &&
+            toolButton(handleFix, 'Auto-Fix', 'Repair common JSON syntax errors', Wand2, {
+              primary: !isConverter,
+            })}
+          {!isNonJsonInput &&
+            (!isConverter || format !== 'json') &&
+            toolButton(handleFormat, 'Format', 'Pretty-print JSON', Braces)}
+          {!isNonJsonInput &&
+            (!isConverter || format !== 'minified') &&
+            toolButton(handleMinify, 'Minify', 'Compress JSON', Minimize2)}
+          {INVERSE[format] !== undefined &&
+            toolButton(handleSwap, 'Swap', 'Swap the conversion direction', ArrowLeftRight, {
+              disabled: !output,
+            })}
           {toolButton(
             () => setViewMode((v) => (v === 'tree' ? 'raw' : 'tree')),
             effectiveView === 'tree' ? 'Raw' : 'Tree',
@@ -435,7 +532,11 @@ const minimalSetup = [
                   className="h-8 cursor-pointer appearance-none rounded-sm border border-hairline bg-elevated pl-8 pr-7 text-xs font-medium text-ink transition-colors hover:bg-elevated-2 focus-visible:outline-accent"
                 >
                   {FORMAT_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
+                    <option
+                      key={opt.value}
+                      value={opt.value}
+                      disabled={disabledFormats.has(opt.value)}
+                    >
                       {opt.label}
                     </option>
                   ))}

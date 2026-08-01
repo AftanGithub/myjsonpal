@@ -1,7 +1,16 @@
-import { stringify } from 'yaml';
+import { parse as parseYaml, stringify } from 'yaml';
 import { autoFixJson, isValidJson, type FixReport } from './jsonFixer';
 
-export type OutputFormat = 'json' | 'csv' | 'yaml' | 'typescript' | 'sql' | 'minified';
+export type OutputFormat =
+  | 'json'
+  | 'csv'
+  | 'csvjson'
+  | 'yaml'
+  | 'yamljson'
+  | 'typescript'
+  | 'zod'
+  | 'sql'
+  | 'minified';
 export type TaskKind = 'format' | 'minify' | 'fix' | 'convert';
 
 export interface TaskInput {
@@ -59,6 +68,92 @@ function toCsv(data: unknown): string {
   const header = columns.map(csvCell).join(',');
   const lines = objects.map((o) => columns.map((c) => csvCell(o[c])).join(','));
   return [header, ...lines].join('\n');
+}
+
+interface CsvCell {
+  raw: string;
+  quoted: boolean;
+}
+
+function parseCsvRows(text: string): CsvCell[][] {
+  const rows: CsvCell[][] = [];
+  let row: CsvCell[] = [];
+  let raw = '';
+  let quoted = false;
+  let inQuotes = false;
+  const src = text.replace(/^\uFEFF/, '');
+
+  const pushField = () => {
+    row.push({ raw, quoted });
+    raw = '';
+    quoted = false;
+  };
+  const pushRow = () => {
+    pushField();
+    rows.push(row);
+    row = [];
+  };
+
+  for (let i = 0; i < src.length; i++) {
+    const ch = src[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (src[i + 1] === '"') {
+          raw += '"';
+          i += 1;
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        raw += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+      quoted = true;
+    } else if (ch === ',') {
+      pushField();
+    } else if (ch === '\n') {
+      pushRow();
+    } else if (ch === '\r') {
+      if (src[i + 1] === '\n') i += 1;
+      pushRow();
+    } else {
+      raw += ch;
+    }
+  }
+
+  if (raw !== '' || row.length > 0 || quoted) pushRow();
+  while (
+    rows.length > 0 &&
+    rows[rows.length - 1].length === 1 &&
+    rows[rows.length - 1][0].raw === '' &&
+    !rows[rows.length - 1][0].quoted
+  ) {
+    rows.pop();
+  }
+  return rows;
+}
+
+function parseCsvCell(cell: CsvCell): unknown {
+  const v = cell.raw.trim();
+  if (cell.quoted) return v;
+  if (v === '') return null;
+  if (/^(true|false)$/i.test(v)) return v.toLowerCase() === 'true';
+  if (/^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(v)) return Number(v);
+  return v;
+}
+
+function toJsonFromCsv(text: string): unknown[] {
+  const rows = parseCsvRows(text);
+  if (rows.length === 0) return [];
+  const headers = rows[0].map((c) => c.raw.trim());
+  return rows.slice(1).map((row) => {
+    const obj: Record<string, unknown> = {};
+    headers.forEach((header, i) => {
+      obj[header] = i < row.length ? parseCsvCell(row[i]) : null;
+    });
+    return obj;
+  });
 }
 
 /* ------------------------------- YAML ------------------------------ */
@@ -142,6 +237,49 @@ function toTypescript(data: unknown, rootName = 'JsonRoot'): string {
   return interfaces.join('\n\n');
 }
 
+/* ------------------------------- Zod ------------------------------- */
+
+function zodType(value: unknown, indent = 2): string {
+  if (value === null) return 'z.null()';
+  if (Array.isArray(value)) {
+    if (value.length === 0) return 'z.array(z.unknown())';
+    return `z.array(${zodType(value[0], indent)})`;
+  }
+  switch (typeof value) {
+    case 'string':
+      return 'z.string()';
+    case 'number':
+      return 'z.number()';
+    case 'boolean':
+      return 'z.boolean()';
+    case 'object': {
+      const entries = Object.entries(value as Record<string, unknown>);
+      if (entries.length === 0) return 'z.record(z.string(), z.unknown())';
+      const pad = ' '.repeat(indent);
+      const childPad = ' '.repeat(indent + 2);
+      const body = entries.map(([k, v]) => {
+        const key = isValidIdentifier(k) ? k : JSON.stringify(k);
+        return `${childPad}${key}: ${zodType(v, indent + 2)}`;
+      });
+      return `z.object({\n${body.join(',\n')}\n${pad}})`;
+    }
+    default:
+      return 'z.unknown()';
+  }
+}
+
+function toZod(data: unknown, rootName = 'mySchema'): string {
+  const typeName = pascalCase(rootName) || 'RootType';
+  return [
+    "import { z } from 'zod';",
+    '',
+    `export const ${rootName} = ${zodType(data)};`,
+    '',
+    `export type ${typeName} = z.infer<typeof ${rootName}>;`,
+    '',
+  ].join('\n');
+}
+
 /* -------------------------------- SQL ------------------------------ */
 
 function quoteIdent(name: string): string {
@@ -198,12 +336,37 @@ export function runTask(task: TaskInput): TaskResult {
     };
   }
 
+  if (format === 'csvjson') {
+    try {
+      const rows = toJsonFromCsv(text);
+      return { ok: true, output: formatJson(rows) };
+    } catch (err) {
+      return {
+        ok: false,
+        error: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+
+  if (format === 'yamljson') {
+    try {
+      const data = parseYaml(text);
+      return { ok: true, output: formatJson(data) };
+    } catch (err) {
+      return {
+        ok: false,
+        error: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+
   try {
     const data = parse(text);
 
     if (kind === 'minify' || format === 'minified') {
       return { ok: true, output: minifyJson(data) };
     }
+    if (format === 'zod') return { ok: true, output: toZod(data) };
     if (format === 'csv') return { ok: true, output: toCsv(data) };
     if (format === 'yaml') return { ok: true, output: toYaml(data) };
     if (format === 'typescript') return { ok: true, output: toTypescript(data) };

@@ -1,0 +1,84 @@
+---
+import StaticPage from '@/layouts/StaticPage.astro';
+import { SITE } from '@/config/site';
+---
+
+<StaticPage
+  eyebrow="Legal"
+  h1="Terms & Conditions"
+  lead="The simple rules for using MyJSONPal. By using the site, you agree to these terms."
+  metaTitle="Terms & Conditions | MyJSONPal"
+  metaDescription="Read the terms and conditions for using MyJSONPal — a free, privacy-first, in-browser JSON formatter and converter. Last updated August 2026."
+  keywords={['terms and conditions', 'terms of service', 'myjsonpal terms', 'json tool terms']}
+  path="/terms"
+  updated="August 1, 2026"
+>
+  <h2 id="acceptance">Acceptance of terms</h2>
+  <p>
+    By accessing or using MyJSONPal ("the Site", "we", "us"), you agree to be bound by these
+    Terms & Conditions and all applicable laws and regulations. If you do not agree with any
+    part of these terms, please do not use the Site.
+  </p>
+
+  <h2 id="service-description">Description of service</h2>
+  <p>
+    The Site provides free, browser-based tools for formatting, validating, repairing,
+    minifying, and converting JSON and other data formats. All processing happens locally in
+    your browser. We do not store, transmit, or otherwise process the data you enter on any of
+    our servers.
+  </p>
+
+  <h2 id="acceptable-use">Acceptable use</h2>
+  <p>You agree not to misuse the Site, including by:</p>
+  <ul>
+    <li>Attempting to disrupt, overload, or impair the Site's infrastructure.</li>
+    <li>
+      Using the Site to process or distribute illegal content, malware, or any material that
+      violates applicable law.
+    </li>
+    <li>
+      Attempting to reverse engineer, scrape, or otherwise circumvent any part of the Site.
+    </li>
+  </ul>
+
+  <h2 id="no-warranty">No warranty</h2>
+  <p>
+    The Site and its tools are provided "as is" and "as available" without warranties of any
+    kind, whether express or implied, including implied warranties of merchantability, fitness
+    for a particular purpose, and non-infringement. We do not warrant that the tools will be
+    uninterrupted, error-free, or that outputs will be free of defects.
+  </p>
+
+  <h2 id="limitation-of-liability">Limitation of liability</h2>
+  <p>
+    To the maximum extent permitted by law, MyJSONPal and its operator shall not be liable
+    for any indirect, incidental, special, consequential, or punitive damages, or any loss of
+    profits or data, arising out of or related to your use of the Site, even if advised of the
+    possibility of such damages.
+  </p>
+
+  <h2 id="intellectual-property">Intellectual property</h2>
+  <p>
+    The Site's design, branding, and code are owned by MyJSONPal unless otherwise credited.
+    Your data and its output remain yours — we never claim ownership of the content you process.
+  </p>
+
+  <h2 id="changes-to-terms">Changes to these terms</h2>
+  <p>
+    We may revise these terms from time to time. Updated terms will be posted on this page with
+    a revised "Last updated" date. Continued use of the Site after changes constitutes
+    acceptance of the updated terms.
+  </p>
+
+  <h2 id="governing-law">Governing law</h2>
+  <p>
+    These terms are governed by applicable local laws. Any disputes arising from the use of the
+    Site shall be resolved in the appropriate courts of that jurisdiction.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <p>
+    Questions about these terms? Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or use
+    our <a href="/contact">contact page</a>.
+  </p>
+</StaticPage>

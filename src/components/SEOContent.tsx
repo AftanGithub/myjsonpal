@@ -80,8 +80,8 @@ export default function SEOContent({ tool }: { tool: ToolConfig }) {
           <div className="mt-4 divide-y divide-hairline border-t border-hairline">
             {tool.faqs.map((faq) => (
               <details key={faq.q} className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-[15px] font-medium text-ink [&::-webkit-details-marker]:hidden">
-                  {faq.q}
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
+                  <h3 className="min-w-0 flex-1 text-[15px] font-medium text-ink">{faq.q}</h3>
                   <ChevronDown
                     className="h-4 w-4 shrink-0 text-mute transition-transform duration-200 group-open:rotate-180"
                     aria-hidden="true"
@@ -97,10 +97,11 @@ export default function SEOContent({ tool }: { tool: ToolConfig }) {
           <h2 className="eyebrow">More free tools</h2>
           <ul className="mt-3 flex flex-wrap gap-2">
             {related.map((t) => (
-              <li key={t.id}>
+              <li key={t.id} className="min-w-0 max-w-full">
                 <a
                   href={t.path}
-                  className="chip transition-colors hover:border-accent hover:text-accent"
+                  title={t.h1}
+                  className="chip w-full truncate transition-colors hover:border-accent hover:text-accent"
                 >
                   <Zap className="h-3 w-3 text-accent" aria-hidden="true" />
                   {t.h1}

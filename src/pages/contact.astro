@@ -1,0 +1,54 @@
+---
+import StaticPage from '@/layouts/StaticPage.astro';
+import { SITE } from '@/config/site';
+
+const FORM_ID = '1FAIpQLSdwjTTj3QsNOSlHGM5bu-7pKm9l2_Xj_dUtvJgOeEsx4vDNuA';
+const FORM_EMBED = `https://docs.google.com/forms/d/e/${FORM_ID}/viewform?embedded=true`;
+---
+
+<StaticPage
+  eyebrow="Company"
+  h1="Contact Us"
+  lead="Bug reports, feature ideas, or just a hello — we read every message."
+  metaTitle="Contact MyJSONPal | Support & Feedback"
+  metaDescription="Get in touch with the MyJSONPal team. Report bugs, request features, or send feedback about our privacy-first JSON tools."
+  keywords={['contact myjsonpal', 'json tool support', 'feature request', 'myjsonpal feedback']}
+  path="/contact"
+>
+  <h2 id="send-a-message">Send a message</h2>
+  <p>
+    Fill in the form below and it goes straight to {SITE.email}. The form is powered by Google
+    Forms, so submissions are recorded reliably — MyJSONPal has no backend servers.
+  </p>
+
+  <div class="mt-6 overflow-hidden rounded-md border border-hairline bg-elevated/60">
+    <iframe
+      src={FORM_EMBED}
+      width="100%"
+      height="640"
+      loading="lazy"
+      title="Contact MyJSONPal form"
+    >
+      Loading form…
+    </iframe>
+  </div>
+
+  <h2 id="other-ways">Other ways to reach us</h2>
+  <ul>
+    <li>
+      Direct email:{' '}
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </li>
+    <li>
+      Development &amp; issues:{' '}
+      <a href={SITE.github} target="_blank" rel="noopener noreferrer">
+        {SITE.github}
+      </a>
+    </li>
+  </ul>
+
+  <p>
+    We aim to reply within a couple of business days. For urgent data matters, remember every
+    tool runs locally in your browser — nothing is ever stored on our side.
+  </p>
+</StaticPage>

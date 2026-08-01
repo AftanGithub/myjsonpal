@@ -41,18 +41,18 @@ const { tool } = Astro.props;
     </div>
   </section>
 
-  <section class="container-site py-8 lg:py-12">
+  <article class="container-site py-8 lg:py-12">
     <EditorWorkspace toolId={tool.id} client:only="react" />
     {SITE.showAds && (
       <div class="mt-6 lg:hidden">
         <AdSlot variant="display" />
       </div>
     )}
-  </section>
+  </article>
 
   <section class="container-site">
     <div
-      class={`grid gap-10 ${SITE.showAds ? 'lg:grid-cols-[minmax(0,1fr)_300px]' : ''}`}
+      class={`grid grid-cols-1 gap-10 ${SITE.showAds ? 'lg:grid-cols-[minmax(0,1fr)_300px]' : ''}`}
     >
       <div>
         {SITE.showAds && <AdSlot variant="display" className="hidden lg:flex" />}

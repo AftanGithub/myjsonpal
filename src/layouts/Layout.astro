@@ -5,43 +5,22 @@ import '@/styles/global.css';
 import Navbar from '@/components/Navbar.tsx';
 import Footer from '@/components/Footer.tsx';
 import AdSlot from '@/components/AdSlot.tsx';
+import SEO from '@/components/SEO.astro';
 import { SITE } from '@/config/site';
 import type { ToolConfig } from '@/config/tools';
 
 interface Props {
-  tool: ToolConfig;
+  tool?: ToolConfig;
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  path?: string;
+  ogImageAlt?: string;
+  noindex?: boolean;
 }
 
-const { tool } = Astro.props;
-const canonical = `${SITE.url}${tool.path}`;
-
-const structuredData = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: tool.h1,
-    url: canonical,
-    applicationCategory: 'DeveloperApplication',
-    operatingSystem: 'Any',
-    browserRequirements: 'Requires JavaScript',
-    description: tool.metaDescription,
-    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    featureList: [
-      '100% client-side processing in your browser',
-      'No file uploads — data never leaves the device',
-      'Free forever with no accounts',
-    ],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: tool.faqs.map((faq) => ({
-      '@type': 'Question',
-      name: faq.q,
-      acceptedAnswer: { '@type': 'Answer', text: faq.a },
-    })),
-  },
-];
+const { tool, title, description, keywords, path = '/', ogImageAlt, noindex } = Astro.props;
+const currentPath = tool ? tool.path : path;
 ---
 
 <!doctype html>
@@ -59,41 +38,37 @@ const structuredData = [
     </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{tool.metaTitle}</title>
-    <meta name="description" content={tool.metaDescription} />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href={canonical} />
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-9YWY6H99FR"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-9YWY6H99FR');
+    </script>
+    <SEO tool={tool} title={title} description={description} keywords={keywords} path={currentPath} ogImageAlt={ogImageAlt} noindex={noindex} />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0a0a0a" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={SITE.name} />
-    <meta property="og:title" content={tool.metaTitle} />
-    <meta property="og:description" content={tool.metaDescription} />
-    <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={tool.metaTitle} />
-    <meta name="twitter:description" content={tool.metaDescription} />
     {
       SITE.showAds &&
         import.meta.env.PUBLIC_ADSENSE_CLIENT && (
-          <script
+          <script is:inline
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.PUBLIC_ADSENSE_CLIENT}`}
             crossorigin="anonymous"
           />
         )
     }
-    <script is:inline type="application/ld+json">
-      {JSON.stringify(structuredData)}
-    </script>
   </head>
   <body class="flex min-h-screen flex-col">
     <AdSlot variant="leaderboard" className="container-site mt-4" />
-    <Navbar pathname={tool.path} client:load />
+    <Navbar pathname={currentPath} client:load />
     <main class="flex-1">
       <slot />
     </main>
