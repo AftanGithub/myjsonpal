@@ -149,7 +149,10 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
     [process, tool.defaultAction, tool.defaultFormat],
   );
 
+  const didInit = useRef(false);
   useEffect(() => {
+    if (didInit.current) return;
+    didInit.current = true;
     runDefault(tool.sample);
   }, [runDefault, tool.sample]);
 
@@ -170,11 +173,11 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   const handleFix = () => process('fix');
   const handleFormat = () => {
     setFormat('json');
-    process('format');
+    process('format', undefined, 'json');
   };
   const handleMinify = () => {
     setFormat('minified');
-    process('minify');
+    process('minify', undefined, 'minified');
   };
 
   const handleFormatChange = (next: OutputFormat) => {
@@ -202,7 +205,11 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
     setValid(true);
   };
 
-  const handleLoadSample = () => runDefault(tool.sample);
+  const handleLoadSample = () => {
+    setInput(tool.sample);
+    setFormat(tool.defaultFormat);
+    process(kindFor(tool.defaultFormat), tool.sample, tool.defaultFormat);
+  };
 
   const handleFile = (file: File) => {
     const reader = new FileReader();
@@ -413,7 +420,7 @@ const minimalSetup = [
 
         {/* ----------------------------- Output pane ---------------------------- */}
         <div className="flex min-h-[400px] flex-col lg:min-h-[540px]">
-          <div className="flex items-center justify-between gap-2 border-b border-hairline px-3 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline px-3 py-2">
             <span className="eyebrow">Output</span>
             <div className="flex items-center gap-1.5">
               <label className="relative">

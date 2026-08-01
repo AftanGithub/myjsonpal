@@ -27,6 +27,12 @@ export default function CmEditor({
       ...(readOnly ? [EditorState.readOnly.of(true), EditorView.editable.of(false)] : []),
       ...extensions,
       placeholder(placeholderText),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged) {
+          onChangeRef.current?.(update.state.doc.toString());
+        }
+      }),
+      EditorView.contentAttributes.of({ 'aria-label': placeholderText || 'Code editor' }),
     ];
   }, [readOnly, extensions, placeholderText]);
 
@@ -37,15 +43,7 @@ export default function CmEditor({
     const view = new EditorView({
       state: EditorState.create({
         doc: value,
-        extensions: [
-          ...fullExtensions,
-          EditorView.updateListener.of((update) => {
-            if (update.docChanged) {
-              onChangeRef.current?.(update.state.doc.toString());
-            }
-          }),
-          EditorView.contentAttributes.of({ 'aria-label': placeholderText || 'Code editor' }),
-        ],
+        extensions: fullExtensions,
       }),
       parent: container,
     });

@@ -1,0 +1,4 @@
+name,role,email,score,active
+Ada Lovelace,Engineer,ada@example.com,42.5,true
+Alan Turing,Researcher,alan@example.com,98,true
+Grace Hopper,Admiral,grace@example.com,88.2,false

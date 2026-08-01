@@ -77,7 +77,7 @@ const HOME_TOOL: ToolConfig = {
     },
     {
       q: 'Is MyJSONPal really free?',
-      a: 'Yes — free forever, with no accounts and no usage quotas. The tool is supported by unobtrusive advertising and a GitHub-sponsored open-source project.',
+      a: 'Yes — free forever, with no accounts and no usage quotas. The tool is supported by unobtrusive advertising, so it stays free for everyone.',
     },
   ],
 };

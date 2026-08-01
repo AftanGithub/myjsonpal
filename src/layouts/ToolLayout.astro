@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import EditorWorkspace from '@/components/EditorWorkspace.tsx';
 import SEOContent from '@/components/SEOContent.tsx';
 import AdSlot from '@/components/AdSlot.tsx';
+import { SITE } from '@/config/site';
 import { FileCheck, Lock, Zap } from 'lucide-react';
 import type { ToolConfig } from '@/config/tools';
 
@@ -42,22 +43,28 @@ const { tool } = Astro.props;
 
   <section class="container-site py-8 lg:py-12">
     <EditorWorkspace toolId={tool.id} client:only="react" />
-    <div class="mt-6 lg:hidden">
-      <AdSlot variant="display" />
-    </div>
+    {SITE.showAds && (
+      <div class="mt-6 lg:hidden">
+        <AdSlot variant="display" />
+      </div>
+    )}
   </section>
 
   <section class="container-site">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+    <div
+      class={`grid gap-10 ${SITE.showAds ? 'lg:grid-cols-[minmax(0,1fr)_300px]' : ''}`}
+    >
       <div>
-        <AdSlot variant="display" className="hidden lg:flex" />
+        {SITE.showAds && <AdSlot variant="display" className="hidden lg:flex" />}
         <SEOContent tool={tool} />
       </div>
-      <aside class="hidden lg:block">
-        <div class="sticky top-24">
-          <AdSlot variant="sticky" />
-        </div>
-      </aside>
+      {SITE.showAds && (
+        <aside class="hidden lg:block">
+          <div class="sticky top-24">
+            <AdSlot variant="sticky" />
+          </div>
+        </aside>
+      )}
     </div>
   </section>
 </Layout>

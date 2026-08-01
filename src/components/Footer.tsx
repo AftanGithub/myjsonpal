@@ -1,7 +1,8 @@
-import { Braces, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import GitHubMark from './GitHubMark';
 import { SITE } from '@/config/site';
 import { TOOL_LIST } from '@/config/tools';
+import logo from '@/assets/logo-mark.png';
 
 const RESOURCE_LINKS = [
   { href: '/fix-json', label: 'Fix Broken JSON' },
@@ -18,9 +19,7 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <a href="/" className="flex items-center gap-2" aria-label="MyJSONPal home">
-              <span className="flex h-7 w-7 items-center justify-center rounded-sm bg-gradient-to-br from-mesh-blue via-mesh-violet to-mesh-magenta text-white">
-                <Braces className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" />
-              </span>
+              <img src={logo.src} alt="" className="h-7 w-7" width={128} height={128} />
               <span className="text-[15px] font-semibold tracking-tight text-ink">myjsonpal</span>
             </a>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-body">
@@ -70,7 +69,7 @@ export default function Footer() {
                   className="inline-flex items-center gap-1.5 text-sm text-body transition-colors hover:text-ink"
                 >
                   <GitHubMark className="h-3.5 w-3.5" />
-                  Open source on GitHub
+                  Developer on GitHub
                 </a>
               </li>
             </ul>
@@ -80,7 +79,7 @@ export default function Footer() {
         <div className="mt-12 flex flex-col gap-2 border-t border-hairline pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-mute">© 2026 MyJSONPal · myjsonpal.com</p>
           <p className="text-xs text-mute">
-            Built with Astro · Runs entirely in your browser · Fast & free forever
+            Runs entirely in your browser · Fast & free forever
           </p>
         </div>
       </div>

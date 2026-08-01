@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Braces, Check, Lock, Menu, Moon, Share2, Sun, X } from 'lucide-react';
+import { Check, Lock, Menu, Moon, Share2, Sun, X } from 'lucide-react';
 import GitHubMark from './GitHubMark';
+import { SITE } from '@/config/site';
+import logo from '@/assets/logo-mark.png';
 
 interface NavbarProps {
   pathname: string;
@@ -52,9 +54,7 @@ export default function Navbar({ pathname }: NavbarProps) {
     <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/85 backdrop-blur-md">
       <nav className="container-site flex h-14 items-center justify-between gap-4">
         <a href="/" className="flex shrink-0 items-center gap-2" aria-label="MyJSONPal home">
-          <span className="flex h-7 w-7 items-center justify-center rounded-sm bg-gradient-to-br from-mesh-blue via-mesh-violet to-mesh-magenta text-white shadow-sm">
-            <Braces className="h-4 w-4" strokeWidth={2.4} aria-hidden="true" />
-          </span>
+          <img src={logo.src} alt="" className="h-7 w-7" width={128} height={128} />
           <span className="text-[15px] font-semibold tracking-tight text-ink">
             myjson<span className="text-mute">pal</span>
           </span>
@@ -86,7 +86,7 @@ export default function Navbar({ pathname }: NavbarProps) {
           <button
             type="button"
             onClick={share}
-            className="btn-icon"
+            className="btn-icon hidden sm:inline-flex"
             aria-label="Copy link to this page"
             title="Share"
           >
@@ -98,11 +98,11 @@ export default function Navbar({ pathname }: NavbarProps) {
           </button>
 
           <a
-            href="https://github.com/myjsonpal/myjsonpal"
+            href={SITE.github}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-icon"
-            aria-label="MyJSONPal on GitHub"
+            aria-label="Developer on GitHub"
             title="GitHub"
           >
             <GitHubMark className="h-4 w-4" />

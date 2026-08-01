@@ -1,4 +1,5 @@
 import { ShieldCheck } from 'lucide-react';
+import { SITE } from '@/config/site';
 
 export type AdVariant = 'leaderboard' | 'sticky' | 'display';
 
@@ -28,6 +29,8 @@ const STYLES: Record<AdVariant, { label: string; className: string }> = {
  * the layout never breaks while ads are unconfigured.
  */
 export default function AdSlot({ variant, className = '' }: AdSlotProps) {
+  if (!SITE.showAds) return null;
+
   const client = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
   const slot = import.meta.env.PUBLIC_ADSENSE_SLOT?.[variant] as string | undefined;
 
