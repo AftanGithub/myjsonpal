@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://myjsonpal.com/sitemap-index.xml

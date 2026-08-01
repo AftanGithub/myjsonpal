@@ -1,0 +1,63 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import EditorWorkspace from '@/components/EditorWorkspace.tsx';
+import SEOContent from '@/components/SEOContent.tsx';
+import AdSlot from '@/components/AdSlot.tsx';
+import { FileCheck, Lock, Zap } from 'lucide-react';
+import type { ToolConfig } from '@/config/tools';
+
+interface Props {
+  tool: ToolConfig;
+}
+
+const { tool } = Astro.props;
+---
+
+<Layout tool={tool}>
+  <section class="mesh-hero relative overflow-hidden border-b border-hairline">
+    <div class="container-site relative py-14 text-center lg:py-20">
+      <p class="eyebrow">{tool.eyebrow}</p>
+      <h1 class="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+        {tool.h1}
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-body sm:text-base">
+        {tool.tagline}
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <span class="chip">
+          <Lock className="h-3.5 w-3.5 text-success" aria-hidden="true" />
+          100% In-Browser &amp; Private
+        </span>
+        <span class="chip">
+          <Zap className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+          No uploads
+        </span>
+        <span class="chip">
+          <FileCheck className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+          Free forever
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-site py-8 lg:py-12">
+    <EditorWorkspace toolId={tool.id} client:only="react" />
+    <div class="mt-6 lg:hidden">
+      <AdSlot variant="display" />
+    </div>
+  </section>
+
+  <section class="container-site">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <div>
+        <AdSlot variant="display" className="hidden lg:flex" />
+        <SEOContent tool={tool} />
+      </div>
+      <aside class="hidden lg:block">
+        <div class="sticky top-24">
+          <AdSlot variant="sticky" />
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>

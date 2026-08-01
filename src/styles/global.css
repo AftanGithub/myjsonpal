@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+@source not "../../.agents";
+@source not "../../dist";
+@source not "../../.git";
+@source not "../../.astro";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ---- Geist type (self-hosted via @fontsource) ---- */
+  --font-sans: "Geist Variable", "Geist", Arial, ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, SFMono-Regular,
+    Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* ---- Surface (light base values) ---- */
+  --color-canvas: #fafafa;
+  --color-elevated: #ffffff;
+  --color-elevated-2: #f7f7f8;
+  --color-hairline: #ebebeb;
+  --color-hairline-soft: #f2f2f2;
+
+  /* ---- Text ---- */
+  --color-ink: #171717;
+  --color-body: #4d4d4d;
+  --color-mute: #8f8f8f;
+  --color-faint: #a1a1a1;
+
+  /* ---- Accent & semantic ---- */
+  --color-accent: #0070f3;
+  --color-accent-strong: #0761d1;
+  --color-accent-soft: #d3e5ff;
+  --color-error: #ee0000;
+  --color-success: #16a34a;
+  --color-warning: #b45309;
+
+  /* ---- Hero mesh stops ---- */
+  --color-mesh-cyan: #50e3c2;
+  --color-mesh-blue: #007cf0;
+  --color-mesh-violet: #7928ca;
+  --color-mesh-magenta: #eb367f;
+  --color-mesh-amber: #f5a623;
+
+  /* ---- Editor chrome ---- */
+  --editor-bg: #ffffff;
+  --editor-fg: #171717;
+  --editor-gutter-bg: #fafafa;
+  --editor-gutter: #a1a1a1;
+  --editor-gutter-border: #f0f0f0;
+  --editor-active-line: #f7f7f8;
+  --editor-selection: rgba(0, 112, 243, 0.14);
+  --editor-cursor: #171717;
+  --editor-faint: #c6c6c6;
+
+  /* ---- Syntax ---- */
+  --syn-property: #0070f3;
+  --syn-string: #028a4c;
+  --syn-number: #7c3aed;
+  --syn-keyword: #0070f3;
+  --syn-bool: #b45309;
+  --syn-comment: #9a9a9a;
+  --syn-punct: #4d4d4d;
+
+  /* ---- Radius (Geist scale) ---- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 100px;
+
+  /* ---- Motion ---- */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 0.3s ease-out both;
+  --animate-toast-in: toast-in 0.2s var(--ease-smooth) both;
+  --animate-pulse-dot: pulse-dot 2.2s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+}
+
+/* ---- Dark mode (default) ---- */
+.dark {
+  --color-canvas: #0a0a0a;
+  --color-elevated: #111113;
+  --color-elevated-2: #1a1a1d;
+  --color-hairline: #26262b;
+  --color-hairline-soft: #1c1c20;
+
+  --color-ink: #fafafa;
+  --color-body: #a1a1a1;
+  --color-mute: #838388;
+  --color-faint: #5c5c61;
+
+  --color-accent: #5c9dff;
+  --color-accent-strong: #3b82f6;
+  --color-accent-soft: #1d2b45;
+  --color-error: #f26d6d;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+
+  --editor-bg: #0e0e10;
+  --editor-fg: #e5e5e7;
+  --editor-gutter-bg: #0a0a0a;
+  --editor-gutter: #5c5c61;
+  --editor-gutter-border: #1f1f23;
+  --editor-active-line: #16161a;
+  --editor-selection: rgba(92, 157, 255, 0.26);
+  --editor-cursor: #ffffff;
+  --editor-faint: #3d3d42;
+
+  --syn-property: #64a0f8;
+  --syn-string: #6fe0a8;
+  --syn-number: #c9a0ff;
+  --syn-keyword: #64a0f8;
+  --syn-bool: #f5c069;
+  --syn-comment: #5c5c61;
+  --syn-punct: #838388;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-canvas text-body font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-canvas);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-hairline) transparent;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-mute;
+  }
+  .btn-primary {
+    @apply inline-flex h-9 select-none items-center justify-center gap-2 rounded-sm bg-ink px-4 text-sm font-medium text-canvas transition-[opacity,transform] duration-150 ease-out hover:opacity-80 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex h-9 select-none items-center justify-center gap-2 rounded-sm border border-hairline bg-elevated px-4 text-sm font-medium text-ink transition-colors duration-150 hover:bg-elevated-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-icon {
+    @apply inline-flex h-9 w-9 select-none items-center justify-center rounded-sm border border-hairline bg-elevated text-body transition-colors duration-150 hover:bg-elevated-2 hover:text-ink active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-hairline bg-elevated px-3 py-1 text-xs font-medium text-mute;
+  }
+}
+
+/* ---- Reusable low-level utilities ---- */
+@utility container-site {
+  @apply mx-auto w-full max-w-[76rem] px-4 sm:px-6 lg:px-8;
+}
+
+@utility mesh-hero {
+  background-image:
+    radial-gradient(
+      55% 45% at 12% 8%,
+      rgba(124, 58, 237, 0.16) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      45% 42% at 88% 4%,
+      rgba(0, 124, 240, 0.16) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      50% 40% at 50% 18%,
+      rgba(80, 227, 194, 0.1) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      40% 38% at 70% 30%,
+      rgba(235, 54, 127, 0.1) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      30% 30% at 30% 34%,
+      rgba(245, 166, 35, 0.08) 0%,
+      transparent 60%
+    );
+}
+
+/* ---- CodeMirror integration ---- */
+.cm-editor {
+  background: var(--editor-bg);
+}
+.cm-editor .cm-scroller {
+  font-family: var(--font-mono);
+  line-height: 1.6;
+}
+.cm-editor.cm-focused {
+  outline: none;
+}
+.cm-editor .cm-content {
+  caret-color: var(--editor-cursor);
+}
+.cm-editor .cm-gutters {
+  background: var(--editor-gutter-bg);
+}
+.cm-editor .cm-activeLine,
+.cm-editor .cm-activeLineGutter {
+  background-color: var(--editor-active-line);
+}
+.cm-editor .cm-tooltip {
+  border: 1px solid var(--color-hairline);
+  border-radius: 6px;
+  background: var(--color-elevated);
+  color: var(--color-ink);
+  box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.18);
+  overflow: hidden;
+}
+.cm-editor .cm-diagnostic {
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.cm-editor .cm-selectionBackground,
+.cm-editor .cm-content ::selection {
+  background: var(--editor-selection) !important;
+}
+.cm-editor .cm-cursor {
+  border-left-color: var(--editor-cursor);
+}
+.cm-editor .cm-foldPlaceholder {
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: 4px;
+  color: var(--editor-faint);
+  padding: 0 4px;
+}
