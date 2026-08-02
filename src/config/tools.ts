@@ -581,26 +581,26 @@ const FIX_JSON: ToolConfig = {
     '{\n  // user profile\n  name: \'Ada Lovelace\',\n  \'role\': "Engineer",\n  active: True,\n  score: 9.5,\n  tags: [\'math\', \'analytics\',],\n  projects: [\n    {title: \'Analytical Engine\', private: False},\n    {title: \'Notes\', tags: [],},\n  ],\n  notes: None,\n}',
   intro: [
     'Every developer has faced the dreaded "Unexpected token" error. MyJSONPal\'s Magic Auto-Repair engine fixes the most common JSON syntax mistakes automatically, so you spend your time on real work instead of debugging quotes.',
-    'The repair engine handles trailing commas, single-quoted strings, unquoted object keys, comments, and Python-style True/False/None literals — transforming messy, dirty text into valid JSON in a single click. Because the entire fix runs locally in your browser, even confidential snippets are repaired in complete privacy.',
+    'The repair engine handles trailing commas, single-quoted strings, unquoted object keys, unquoted string values, stray or mismatched double quotes, missing or extra commas, comments, and Python-style True/False/None literals — transforming messy, dirty text into valid JSON in a single click. Because the entire fix runs locally in your browser, even confidential snippets are repaired in complete privacy.',
     'For everything the engine cannot infer, the strict validator pinpoints the exact line and column of the remaining error so you can finish the job by hand.',
   ],
   howToTitle: 'How to fix broken JSON',
   howTo: [
     'Paste your broken or dirty JSON into the input editor.',
     'Click Auto-Fix JSON.',
-    'Review the repairs listed in the status bar (quotes, commas, keys, literals).',
+    'Review the repairs listed in the status bar (quotes, values, commas, keys, literals).',
     'If any errors remain, the validator highlights their exact position.',
     'Copy the repaired JSON or download it as a .json file.',
   ],
   codeExample: {
     caption: 'Common problems the repair engine solves',
     code:
-      '// Before — full of common mistakes\n{ name: \'Ada\', active: True, tags: [\'math\', \'code\',], }\n\n// After — valid JSON\n{ "name": "Ada", "active": true, "tags": ["math", "code"] }',
+      '// Before — full of common mistakes\n{ name: \'Ada\', active: True, score: 9.5, tags: [\'math\', \'code\',], status: active }\n\n// After — valid JSON\n{ "name": "Ada", "active": true, "score": 9.5, "tags": ["math", "code"], "status": "active" }',
   },
   faqs: [
     {
       q: 'Which errors can Auto-Fix repair?',
-      a: 'Trailing commas, single-quoted strings, unquoted keys, line and block comments, and Python True/False/None literals. It also normalizes line endings and removes the UTF-8 BOM.',
+      a: 'Trailing commas, single-quoted strings, unquoted keys, unquoted string values, stray or mismatched double quotes, missing or extra commas, line and block comments, and Python True/False/None literals. It also normalizes line endings and removes the UTF-8 BOM.',
     },
     {
       q: 'Can it fix everything?',

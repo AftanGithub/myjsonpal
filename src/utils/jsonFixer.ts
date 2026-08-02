@@ -126,6 +126,206 @@ function normalizeLiterals(text: string): { text: string; changes: string[] } {
   return { text: coerced, changes };
 }
 
+/* --------------------- string-aware structural repair --------------------- */
+
+function isNumberLike(s: string): boolean {
+  return /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(s);
+}
+
+function isJsonLiteral(s: string): boolean {
+  return s === 'true' || s === 'false' || s === 'null' || isNumberLike(s);
+}
+
+/**
+ * A string-aware scanner that repairs the mistakes regex passes can't see:
+ *  - bareword values (e.g. `{"test": dark}` → `{"test": "dark"}`)
+ *  - unquoted keys that follow a value (missing-comma + bareword key)
+ *  - stray double quotes — a lone opening quote gets closed before the
+ *    next `:`, `,`, `}`, `]`, or line break; a lone closing quote after a
+ *    bareword gets an opening quote added.
+ *  - extra / duplicate commas and missing commas between members.
+ * Every step is conservative: valid strings and structure pass through
+ * untouched, and only unambiguous repairs are applied.
+ */
+function fixStructural(raw: string): { text: string; changes: string[] } {
+  const out: string[] = [];
+  const src = raw;
+  const n = src.length;
+  let i = 0;
+  let prev: string | null = null;
+
+  let closedStrings = 0;
+  let quotedKeys = 0;
+  let quotedValues = 0;
+  let insertedCommas = 0;
+  let removedCommas = 0;
+  let removedTrailing = 0;
+
+  const isWs = (ch: string) => ch !== undefined && /[ \t\r\n]/.test(ch);
+  const isStructural = (ch: string) => ch !== undefined && '{}\[\]:,"'.includes(ch);
+  const isWordChar = (ch: string) => ch !== undefined && !isWs(ch) && !isStructural(ch);
+  const needsComma = (p: string | null) =>
+    p === 'str' || p === 'word' || p === '}' || p === ']';
+
+  const changes = (): string[] => {
+    const c: string[] = [];
+    if (closedStrings > 0)
+      c.push(`Closed ${closedStrings} unclosed double-quoted string${closedStrings === 1 ? '' : 's'}`);
+    if (quotedKeys > 0) c.push(`Quoted ${quotedKeys} unquoted key${quotedKeys === 1 ? '' : 's'}`);
+    if (quotedValues > 0)
+      c.push(`Quoted ${quotedValues} bareword value${quotedValues === 1 ? '' : 's'}`);
+    if (insertedCommas > 0)
+      c.push(`Inserted ${insertedCommas} missing comma${insertedCommas === 1 ? '' : 's'}`);
+    if (removedCommas > 0)
+      c.push(`Removed ${removedCommas} extra comma${removedCommas === 1 ? '' : 's'}`);
+    if (removedTrailing > 0)
+      c.push(`Removed ${removedTrailing} trailing comma${removedTrailing === 1 ? '' : 's'}`);
+    return c;
+  };
+
+  /** Drop a comma sitting between the last token and a closing `}` / `]`. */
+  const trimTrailingComma = () => {
+    let end = out.length;
+    while (end > 0 && isWs(out[end - 1])) end -= 1;
+    if (end > 0 && out[end - 1] === ',') {
+      out.length = end - 1;
+      removedTrailing += 1;
+    }
+  };
+
+  while (i < n) {
+    const ch = src[i];
+
+    if (isWs(ch)) {
+      out.push(ch);
+      i += 1;
+      continue;
+    }
+
+    if (ch === '"') {
+      if (needsComma(prev)) {
+        out.push(',');
+        insertedCommas += 1;
+        prev = ',';
+      }
+      // find the closing quote, honoring escapes
+      let j = i + 1;
+      let closed = -1;
+      while (j < n) {
+        if (src[j] === '\\') {
+          j += 2;
+          continue;
+        }
+        if (src[j] === '"') {
+          closed = j;
+          break;
+        }
+        j += 1;
+      }
+      if (closed >= 0) {
+        out.push(src.slice(i, closed + 1));
+        prev = 'str';
+        i = closed + 1;
+        continue;
+      }
+      // unclosed string: close it right before the next member/structural token
+      let k = i + 1;
+      while (k < n && !':,}]\n'.includes(src[k])) k += 1;
+      out.push(src.slice(i, k));
+      out.push('"');
+      closedStrings += 1;
+      prev = 'str';
+      i = k;
+      continue;
+    }
+
+    if (ch === '{' || ch === '[') {
+      if (needsComma(prev)) {
+        out.push(',');
+        insertedCommas += 1;
+        prev = ',';
+      }
+      out.push(ch);
+      prev = ch;
+      i += 1;
+      continue;
+    }
+
+    if (ch === '}') {
+      if (prev === ',') trimTrailingComma();
+      out.push(ch);
+      prev = '}';
+      i += 1;
+      continue;
+    }
+    if (ch === ']') {
+      if (prev === ',') trimTrailingComma();
+      out.push(ch);
+      prev = ']';
+      i += 1;
+      continue;
+    }
+    if (ch === ':') {
+      out.push(ch);
+      prev = ':';
+      i += 1;
+      continue;
+    }
+    if (ch === ',') {
+      if (prev === ',' || prev === '{' || prev === '[' || prev === ':') {
+        removedCommas += 1;
+        i += 1;
+        continue;
+      }
+      out.push(ch);
+      prev = ',';
+      i += 1;
+      continue;
+    }
+
+    // bareword token (number, boolean, key, or unquoted string value)
+    let j = i;
+    while (j < n && isWordChar(src[j])) j += 1;
+    const word = src.slice(i, j);
+
+    // a lone quote right after the bareword acts as its closing quote
+    let next = j;
+    let adjQuote = false;
+    if (j < n && src[j] === '"') {
+      const after = j + 1;
+      const follower = after < n ? src[after] : '';
+      if (follower === '' || isWs(follower) || ':,.}]\n'.includes(follower)) {
+        adjQuote = true;
+        next = after;
+      }
+    }
+
+    // is this token a key (bareword followed by `:`)?
+    let k = adjQuote ? next : j;
+    while (k < n && isWs(src[k])) k += 1;
+    const isKey = k < n && src[k] === ':';
+
+    if (needsComma(prev)) {
+      out.push(',');
+      insertedCommas += 1;
+      prev = ',';
+    }
+
+    if (isJsonLiteral(word)) {
+      out.push(word);
+      prev = 'word';
+    } else {
+      out.push('"', word, '"');
+      if (isKey) quotedKeys += 1;
+      else quotedValues += 1;
+      prev = 'str';
+    }
+    i = next;
+  }
+
+  return { text: out.join(''), changes: changes() };
+}
+
 /** Attempt to parse; extract a friendly line/column from V8 error messages. */
 function isValidJson(text: string): { valid: boolean; error?: string } {
   try {
@@ -153,6 +353,7 @@ export function autoFixJson(raw: string): FixReport {
   const keys = quoteUnquotedKeys(quotes.text);
   const commas = removeTrailingCommas(keys.text);
   const literals = normalizeLiterals(commas.text);
+  const structural = fixStructural(literals.text);
 
   const allChanges = [
     ...changes,
@@ -161,11 +362,12 @@ export function autoFixJson(raw: string): FixReport {
     ...keys.changes,
     ...commas.changes,
     ...literals.changes,
+    ...structural.changes,
   ];
 
-  const result = isValidJson(literals.text);
+  const result = isValidJson(structural.text);
   return {
-    fixed: literals.text,
+    fixed: structural.text,
     valid: result.valid,
     changes: allChanges,
     ...(result.error ? { error: result.error } : {}),
