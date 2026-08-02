@@ -54,6 +54,17 @@ const HOME_TOOL: ToolConfig = {
     'json syntax error checker',
     'json format checker free',
     'client side json viewer',
+    'format json',
+    'format json online',
+    'fix json',
+    'fix json online',
+    'fix json format',
+    'fix json syntax error',
+    'fix json formatting',
+    'fix json format online',
+    'fix json file',
+    'fix json quotes',
+    'fix json structure',
   ],
   defaultFormat: 'json',
   defaultAction: 'format',
@@ -94,6 +105,26 @@ const HOME_TOOL: ToolConfig = {
       q: 'Is MyJSONPal really free?',
       a: 'Yes — free forever, with no accounts and no usage quotas. The tool is supported by unobtrusive advertising, so it stays free for everyone.',
     },
+    {
+      q: 'How to format JSON?',
+      a: 'Paste your JSON into the editor and click Format (or press the switch to JSON). MyJSONPal re-parses the document and re-emits it with two-space indentation, color highlighting, and inline validation — all instantly and entirely in your browser.',
+    },
+    {
+      q: 'How to fix JSON error?',
+      a: 'Press Auto-Fix JSON. The Magic Auto-Repair engine fixes the most common mistakes automatically — trailing commas, single quotes, unquoted keys and values, stray double quotes, and missing or extra commas. If anything remains, the validator highlights the exact line and column.',
+    },
+    {
+      q: 'How to fix JSON parse error?',
+      a: 'Run Auto-Fix JSON to repair common parse errors such as trailing commas, single-quoted strings, unquoted keys, unquoted values, and Python-style True/False/None literals. Any error the engine cannot fix is pinpointed with its exact line and column so you can correct it by hand.',
+    },
+    {
+      q: 'How to fix unexpected end of JSON input?',
+      a: 'This error usually means a closing brace, bracket, or quote is missing. Click Auto-Fix JSON first — it closes unclosed strings automatically — then check the reported line and column for any missing closing } or ] at the end of the document.',
+    },
+    {
+      q: 'How to fix invalid JSON response?',
+      a: 'Copy the response body into the input editor, click Auto-Fix JSON to repair common syntax issues, then Format to validate. For API responses the validator points to exactly where the invalid part begins, so you can patch the server output quickly.',
+    },
   ],
 };
 
@@ -123,6 +154,12 @@ const JSON_TO_CSV: ToolConfig = {
     'convert api response json to excel sheet',
     'json stringify to csv table',
     'online json to spreadsheet',
+    'json to csv converter',
+    'json to csv python',
+    'json to csv converter online',
+    'json to csv online',
+    'converting json to csv',
+    'json to csv conversion',
   ],
   defaultFormat: 'csv',
   defaultAction: 'format',
@@ -159,6 +196,30 @@ const JSON_TO_CSV: ToolConfig = {
       q: 'Can I convert a large JSON file?',
       a: 'Yes — conversion runs in a Web Worker so large payloads are processed without freezing the page. The limit is whatever your browser can comfortably parse.',
     },
+    {
+      q: 'How to convert JSON to CSV?',
+      a: 'Paste an array of JSON objects and select JSON ➔ CSV from the format dropdown. Each object becomes a row, the header is generated from your keys, and the RFC 4180-compliant result opens cleanly in Excel and Google Sheets.',
+    },
+    {
+      q: 'How to convert a JSON file to CSV?',
+      a: 'Drag and drop the .json file anywhere on the input pane, then select JSON ➔ CSV. The file is read directly by your browser and converted locally — nothing is uploaded to a server.',
+    },
+    {
+      q: 'What is the best tool for converting JSON to CSV?',
+      a: 'MyJSONPal converts JSON to CSV entirely in your browser — free, no sign-up, RFC 4180-compliant output, and your data never leaves your device. Paste the JSON, pick JSON ➔ CSV, and download or copy the result.',
+    },
+    {
+      q: 'How to save JSON in CSV?',
+      a: 'Convert the JSON with the JSON ➔ CSV option, then click Download to save a .csv file you can open in Excel, Google Sheets, or any spreadsheet application.',
+    },
+    {
+      q: 'How to extract data from a JSON file?',
+      a: 'Paste the file contents or drop the file onto the editor, convert it with JSON ➔ CSV, and every record becomes a row you can filter in a spreadsheet. Nested objects are preserved as compact JSON strings inside their cells.',
+    },
+    {
+      q: 'How do I convert JSON to CSV in VS Code?',
+      a: 'You can use an extension or write a script, but MyJSONPal does it in your browser without installing anything — paste the JSON, select JSON ➔ CSV, then copy or download the result.',
+    },
   ],
 };
 
@@ -186,6 +247,14 @@ const JSON_TO_YAML: ToolConfig = {
     'json to openapi yaml',
     'transform json payload to yaml format',
     'json to yaml config generator',
+    'json to yaml converter',
+    'json to yaml online',
+    'python json to yaml',
+    'convert json to yaml online',
+    'free json to yaml converter online',
+    'json to yaml formatter',
+    'json to yaml conversion',
+    'convert swagger json to yaml',
   ],
   defaultFormat: 'yaml',
   defaultAction: 'format',
@@ -222,6 +291,34 @@ const JSON_TO_YAML: ToolConfig = {
       q: 'Is my configuration data private?',
       a: 'Yes. The entire conversion happens in your browser. Your configs and secrets never touch a server or a network request.',
     },
+    {
+      q: 'How to convert YAML to JSON?',
+      a: 'The same workspace works in both directions: select YAML ➔ JSON from the format dropdown, or press Swap, to turn any YAML document back into formatted JSON in one click.',
+    },
+    {
+      q: 'When to use YAML vs JSON?',
+      a: 'Use YAML when you want human-readable configuration — Docker Compose, Kubernetes, CI pipelines, OpenAPI. Use JSON when you need a strict, unambiguous interchange format that every language parses natively, especially for APIs.',
+    },
+    {
+      q: 'How to convert a YAML file to JSON?',
+      a: 'Drop the .yaml file onto the input pane, select YAML ➔ JSON (or press Swap), and download the formatted JSON result — all processed locally in your browser.',
+    },
+    {
+      q: 'YAML vs JSON differences and when to use each?',
+      a: 'JSON is strict, compact, and ubiquitous for APIs and data exchange; YAML is a human-friendly superset that is better for configuration files. Use JSON for machine-to-machine data and YAML for config people hand-edit.',
+    },
+    {
+      q: 'How does YAML compare to JSON?',
+      a: 'YAML is a superset of JSON with cleaner syntax for config — indentation instead of braces, comments, and anchors. JSON is stricter, more compact, and safer to parse, while YAML\'s whitespace-sensitivity can cause subtle errors.',
+    },
+    {
+      q: 'How does YAML compare to JSON in terms of readability and usability?',
+      a: 'For humans, YAML is usually easier to read and edit because it drops braces and quotes. For machines, JSON is simpler and more predictable — no indentation rules and no type ambiguity.',
+    },
+    {
+      q: 'How does TOML compare to JSON and YAML?',
+      a: 'TOML is a minimal config format built around sections and key = value pairs, great for simple settings. YAML is more expressive for nested structures and lists, and JSON is the universal data interchange format. For complex config choose YAML; for strict exchange choose JSON; for simple config choose TOML.',
+    },
   ],
 };
 
@@ -251,6 +348,17 @@ const JSON_TO_TYPESCRIPT: ToolConfig = {
     'nested json to typescript interface',
     'json to typescript online free',
     'typescript type infer json payload',
+    'json to typescript interface',
+    'convert json to typescript class',
+    'json to typescript object',
+    'json to typescript online',
+    'json to typescript converter',
+    'free json to typescript converter',
+    'convert json to typescript object online',
+    'json to typescript type',
+    'json to typescript schema',
+    'json to typescript type converter',
+    'json to typescript interface vscode',
   ],
   defaultFormat: 'typescript',
   defaultAction: 'format',
@@ -287,6 +395,18 @@ const JSON_TO_TYPESCRIPT: ToolConfig = {
       q: 'Does it work for large documents?',
       a: 'Yes. Generation runs in a Web Worker, so even big payloads produce types quickly without blocking the page.',
     },
+    {
+      q: 'How to type JSON in TypeScript?',
+      a: 'Paste a sample of your JSON into the editor and select JSON ➔ TypeScript. MyJSONPal generates interfaces with PascalCase names and [] for arrays that you can paste straight into your project and import as types.',
+    },
+    {
+      q: 'How to create an array of JSON objects in TypeScript?',
+      a: 'Generate types from a JSON array sample — the tool emits a named interface with a [] suffix (for example Chapter[]). Declare your variable with that type and TypeScript validates every property at compile time.',
+    },
+    {
+      q: 'How to parse JSON in TypeScript?',
+      a: 'Use JSON.parse() and cast the result to the generated type: const data = JSON.parse(text) as MyType. Generate MyType from a sample of your payload with JSON ➔ TypeScript so the shape always matches your runtime data.',
+    },
   ],
 };
 
@@ -316,6 +436,15 @@ const CSV_TO_JSON: ToolConfig = {
     'parse csv to json payload',
     'convert excel csv to json object',
     'csv comma separated to json',
+    'csv to json converter',
+    'convert csv to json online',
+    'how to convert csv to json',
+    'export csv to json',
+    'csv to json python',
+    'converting csv to json',
+    'javascript csv to json',
+    'online csv to json converter',
+    'free csv to json converter',
   ],
   defaultFormat: 'csvjson',
   defaultAction: 'format',
@@ -352,6 +481,26 @@ const CSV_TO_JSON: ToolConfig = {
       q: 'Can I convert a large CSV file?',
       a: 'Yes. Parsing runs in a Web Worker, so large files convert without freezing the page — the limit is whatever your browser can handle.',
     },
+    {
+      q: 'How to convert CSV to JSON?',
+      a: 'Paste raw CSV text or drop a .csv file onto the input pane, then select CSV ➔ JSON. The first row becomes the keys and every following row becomes an object in a JSON array.',
+    },
+    {
+      q: 'How to convert a CSV file to JSON?',
+      a: 'Drag and drop the .csv file anywhere on the input pane and select CSV ➔ JSON. The file is parsed locally in your browser — nothing is uploaded to a server.',
+    },
+    {
+      q: 'What is the best tool for converting CSV to JSON?',
+      a: 'MyJSONPal converts CSV to JSON fully in your browser — free, no accounts, correct handling of quoted fields and escaped quotes, and your data never leaves your device.',
+    },
+    {
+      q: 'How to turn CSV into JSON?',
+      a: 'Paste your CSV and select CSV ➔ JSON. The converter reads the header row as keys and maps every row into an object. Copy or download the resulting JSON array.',
+    },
+    {
+      q: 'How to convert CSV file to JSON?',
+      a: 'Drop the .csv file onto the editor, choose CSV ➔ JSON, and download the JSON array. Numbers and booleans are typed automatically, while quoted cells stay strings.',
+    },
   ],
 };
 
@@ -379,6 +528,10 @@ const YAML_TO_JSON: ToolConfig = {
     'parse yaml file to json array',
     'docker yaml to json object',
     'yaml config to formatted json',
+    'yaml to json converter',
+    'yaml to json converter python',
+    'yaml to json online',
+    'how to convert yaml to json',
   ],
   defaultFormat: 'yamljson',
   defaultAction: 'format',
@@ -415,6 +568,22 @@ const YAML_TO_JSON: ToolConfig = {
       q: 'Can I convert large YAML files?',
       a: 'Yes. Conversion runs in a Web Worker, so large documents parse without freezing the page — the limit is whatever your browser can handle.',
     },
+    {
+      q: 'How to convert YAML to JSON?',
+      a: 'Paste your YAML and select YAML ➔ JSON from the format dropdown. Nested mappings become JSON objects, lists become arrays, and scalars are typed correctly — instantly and fully in your browser.',
+    },
+    {
+      q: 'How to convert a YAML file to JSON?',
+      a: 'Drag and drop the .yaml file onto the input pane, select YAML ➔ JSON, and download the formatted JSON. The file never leaves your device.',
+    },
+    {
+      q: 'How to convert YAML to JSON in Python?',
+      a: 'Use PyYAML to load the YAML (yaml.safe_load) and json.dumps to emit JSON. Or skip the code entirely — paste your YAML into MyJSONPal and get formatted JSON in one click with no Python required.',
+    },
+    {
+      q: 'YAML vs JSON differences and when to use each?',
+      a: 'JSON is strict, compact, and universal for APIs and data exchange; YAML is a more readable superset suited to configuration files. Use JSON for machine-to-machine data and YAML for config people edit by hand.',
+    },
   ],
 };
 
@@ -444,6 +613,11 @@ const JSON_TO_ZOD: ToolConfig = {
     'create zod schema from api response',
     'json to zod typescript online',
     'zod infer type from json object',
+    'json to zod schema converter',
+    'json to zod converter',
+    'json to zod online',
+    'convert json to zod schema',
+    'free json to zod schema converter',
   ],
   defaultFormat: 'zod',
   defaultAction: 'format',
@@ -480,6 +654,18 @@ const JSON_TO_ZOD: ToolConfig = {
       q: 'Is the output ready to use?',
       a: 'The generated code imports { z } from "zod" and uses standard zod syntax, so it works with zod v3 and v4. Run it on the page, then paste it into your project.',
     },
+    {
+      q: 'What is Zod?',
+      a: 'Zod is a TypeScript-first schema declaration and validation library. You describe your data shape once with a schema, and it gives you runtime validation plus an automatically inferred TypeScript type through z.infer.',
+    },
+    {
+      q: 'How to convert JSON to Zod?',
+      a: 'Paste a JSON sample and select JSON ➔ Zod Schema. MyJSONPal generates nested z.object(), z.string(), z.number(), z.array(), and z.null() definitions plus a z.infer type export, ready to paste into your project.',
+    },
+    {
+      q: 'Difference between JSON and Zod?',
+      a: 'JSON is a data format — plain text you parse and exchange. Zod is TypeScript code that describes and validates a data shape at runtime. JSON holds data; a Zod schema enforces its structure.',
+    },
   ],
 };
 
@@ -507,6 +693,13 @@ const MINIFY_JSON: ToolConfig = {
     'one line json converter',
     'compress json payload size',
     'minify json for api response',
+    'json compressor',
+    'json space remover',
+    'json whitespace',
+    'online json minifier',
+    'json minifier tool',
+    'json space remover tool',
+    'remove space from json',
   ],
   defaultFormat: 'minified',
   defaultAction: 'minify',
@@ -542,6 +735,14 @@ const MINIFY_JSON: ToolConfig = {
     {
       q: 'Is it safe for sensitive data?',
       a: 'Yes. Minification runs entirely in your browser; your data is never sent anywhere.',
+    },
+    {
+      q: 'How to remove whitespace from JSON?',
+      a: 'Paste your JSON and select the JSON · Minified format, or press Minify. All insignificant whitespace and line breaks are stripped while the data stays 100% valid, and the status bar shows exactly how many bytes you saved.',
+    },
+    {
+      q: 'How to minify JSON size?',
+      a: 'Click Minify to remove every byte of unnecessary whitespace — typically cutting pretty-printed JSON by 60–80%. For even smaller payloads, shorten long key names and avoid repeating large values.',
     },
   ],
 };
