@@ -1,0 +1,201 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import EditorWorkspace from '@/components/EditorWorkspace.tsx';
+import { TOOLS, TOOL_LIST } from '@/config/tools';
+import {
+  ArrowRight,
+  Bot,
+  ChevronDown,
+  ClipboardPaste,
+  Download,
+  GitBranch,
+  Lock,
+  ScanSearch,
+  Server,
+  ShieldCheck,
+  SlidersHorizontal,
+  Sparkles,
+} from 'lucide-react';
+
+const tool = TOOLS['json-sanitizer'];
+
+const FEATURES = [
+  {
+    icon: ShieldCheck,
+    title: '🛡️ 100% In-Browser Processing',
+    body: 'Web Workers ensure sensitive data never leaves the local browser session. Nothing is uploaded, logged, or stored.',
+  },
+  {
+    icon: ScanSearch,
+    title: '🔍 Entropy & Pattern Scanning',
+    body: 'Automatically catches Stripe, OpenAI, AWS, JWTs, hex hashes, and database passwords — plus high-entropy strings that look like keys.',
+  },
+  {
+    icon: SlidersHorizontal,
+    title: '⚙️ Custom Key Rules',
+    body: 'Interactively pick domain-specific keys to sanitize and persist custom rules in browser storage for every future session.',
+  },
+];
+
+const STEPS = [
+  {
+    icon: ClipboardPaste,
+    title: 'Paste JSON',
+    body: 'Drop your payload into the editor or drag & drop a .json file. Nothing is uploaded.',
+  },
+  {
+    icon: ScanSearch,
+    title: 'Auto-Detect & Redact',
+    body: 'The engine scans keys and values, then replaces every secret with a safe placeholder value.',
+  },
+  {
+    icon: Download,
+    title: 'Download / Copy Clean JSON',
+    body: 'Grab the sanitized result from the clipboard or as a .json file — ready to share anywhere.',
+  },
+];
+
+const USE_CASES = [
+  {
+    icon: Bot,
+    title: 'Scrub JSON before feeding LLMs',
+    body: 'Pasting API responses into ChatGPT or Claude often leaks real keys. Sanitize first so your prompts and conversations stay clean.',
+  },
+  {
+    icon: GitBranch,
+    title: 'Safe for public GitHub issues',
+    body: 'Stack traces and config dumps love to hide credentials. Redact them before attaching reproductions to public bug reports.',
+  },
+  {
+    icon: Server,
+    title: 'Share fixture data without risk',
+    body: 'Use realistic mock samples in docs, demos, and test suites without exposing real secrets or customer PII.',
+  },
+];
+---
+
+<Layout tool={tool}>
+  <section class="mesh-hero relative overflow-hidden border-b border-hairline">
+    <div class="container-site relative py-14 text-center lg:py-16">
+      <p class="eyebrow">{tool.eyebrow}</p>
+      <h1 class="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+        JSON Secret &amp; PII Sanitizer
+      </h1>
+      <p class="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-body sm:text-base">
+        {tool.tagline}
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <span class="chip">
+          <Lock className="h-3.5 w-3.5 text-success" aria-hidden="true" />
+          100% In-Browser &amp; Privacy-First
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <article class="container-site py-8 lg:py-12">
+    <EditorWorkspace
+      toolId={tool.id}
+      defaultAutoSanitize={true}
+      initialJson={tool.sample}
+      client:only="react"
+    />
+
+    <div class="mt-5 flex items-center justify-between gap-3 rounded-md border border-hairline bg-elevated/60 px-4 py-3">
+      <p class="text-sm text-body">
+        Need to format or generate TypeScript types from this JSON?
+      </p>
+      <a
+        href="/json-to-typescript/"
+        class="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-accent-strong"
+      >
+        Open in full MyJSONPal Studio
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </a>
+    </div>
+  </article>
+
+  <section class="container-site pb-16 lg:pb-24">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+        Free Online JSON Secret &amp; PII Sanitizer
+      </h2>
+      <p class="mt-3 text-[15px] leading-relaxed text-body">
+        {tool.intro[0]}
+      </p>
+
+      <div class="mt-10 grid gap-4 sm:grid-cols-3">
+        {FEATURES.map((feature) => (
+          <div class="rounded-md border border-hairline bg-elevated p-5">
+            <feature.icon className="h-5 w-5 text-accent" aria-hidden="true" />
+            <h3 class="mt-3 text-sm font-medium text-ink">{feature.title}</h3>
+            <p class="mt-1.5 text-[13px] leading-relaxed text-body">{feature.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-14">
+        <h2 class="text-xl font-semibold tracking-tight text-ink">How it works</h2>
+        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+          {STEPS.map((step, i) => (
+            <div class="relative rounded-md border border-hairline bg-elevated p-5">
+              <span class="absolute right-4 top-4 font-mono text-xs font-medium text-faint">
+                {i + 1}
+              </span>
+              <step.icon className="h-5 w-5 text-accent" aria-hidden="true" />
+              <h3 class="mt-3 text-sm font-medium text-ink">{step.title}</h3>
+              <p class="mt-1.5 text-[13px] leading-relaxed text-body">{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-14">
+        <h2 class="text-xl font-semibold tracking-tight text-ink">
+          Built for developers sharing JSON safely
+        </h2>
+        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+          {USE_CASES.map((useCase) => (
+            <div class="rounded-md border border-hairline bg-elevated p-5">
+              <useCase.icon className="h-5 w-5 text-accent" aria-hidden="true" />
+              <h3 class="mt-3 text-sm font-medium text-ink">{useCase.title}</h3>
+              <p class="mt-1.5 text-[13px] leading-relaxed text-body">{useCase.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-14">
+        <h2 class="text-xl font-semibold tracking-tight text-ink">Frequently asked questions</h2>
+        <div class="mt-4 divide-y divide-hairline border-t border-hairline">
+          {tool.faqs.map((faq) => (
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
+                <h3 class="min-w-0 flex-1 text-[15px] font-medium text-ink">{faq.q}</h3>
+                <ChevronDown
+                  className="h-4 w-4 shrink-0 text-mute transition-transform duration-200 group-open:rotate-180"
+                  aria-hidden="true"
+                />
+              </summary>
+              <p class="pb-4 text-sm leading-relaxed text-body">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="mt-12 rounded-md border border-hairline bg-elevated/60 p-5">
+        <h2 class="eyebrow">Related free tools</h2>
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {TOOL_LIST.filter((t) => t.id !== tool.id).map((t) => (
+            <li>
+              <a href={t.path} class="chip transition-colors hover:border-accent hover:text-accent">
+                <Sparkles className="h-3 w-3 text-accent" aria-hidden="true" />
+                {t.h1}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>

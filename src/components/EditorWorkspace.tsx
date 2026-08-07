@@ -45,9 +45,14 @@ import { runTaskAsync } from '@/utils/workerClient';
 import { TOOLS, type ToolConfig } from '@/config/tools';
 import type { OutputFormat, TaskKind } from '@/utils/jsonProcessor';
 import JsonTree from './JsonTree';
+import { useSanitizer } from '@/hooks/useSanitizer';
+import SanitizerToolbar, { SanitizerBanner } from './SanitizerToolbar';
+import SanitizerModal from './SanitizerModal';
 
 interface EditorWorkspaceProps {
   toolId: string;
+  defaultAutoSanitize?: boolean;
+  initialJson?: string;
 }
 
 const EXT: Record<OutputFormat, string> = {
@@ -103,10 +108,11 @@ const CONVERT_LABELS: Partial<Record<OutputFormat, string>> = {
   sql: 'Convert to SQL',
 };
 
-export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
+export default function EditorWorkspace({ toolId, defaultAutoSanitize = false, initialJson }: EditorWorkspaceProps) {
   const tool: ToolConfig = TOOLS[toolId];
+  const initialText = initialJson ?? tool.sample;
 
-  const [input, setInput] = useState(tool.sample);
+  const [input, setInput] = useState(initialText);
   const [output, setOutput] = useState('');
   const [format, setFormat] = useState<OutputFormat>(tool.defaultFormat);
   const [viewMode, setViewMode] = useState<'raw' | 'tree'>('raw');
@@ -119,7 +125,10 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   const [tableName, setTableName] = useState('records');
   const [outputLang, setOutputLang] = useState<Extension | undefined>(undefined);
   const [inputLang, setInputLang] = useState<Extension | undefined>(undefined);
+  const [manageOpen, setManageOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const sanitizer = useSanitizer(defaultAutoSanitize);
 
   const canTree = format === 'json' || format === 'minified' || format === 'csvjson' || format === 'yamljson';
   const effectiveView = canTree ? viewMode : 'raw';
@@ -208,8 +217,25 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   useEffect(() => {
     if (didInit.current) return;
     didInit.current = true;
-    runDefault(tool.sample);
-  }, [runDefault, tool.sample]);
+    runDefault(initialText);
+  }, [runDefault, initialText]);
+
+  useEffect(() => {
+    if (!canTree) return;
+    const compact = format === 'minified';
+    if (isNonJsonInput) {
+      sanitizer.runSanitize(output, compact);
+      return;
+    }
+    let candidate = output;
+    try {
+      JSON.parse(input);
+      candidate = input;
+    } catch {
+      /* input invalid mid-edit — keep sanitizing the last valid output */
+    }
+    sanitizer.runSanitize(candidate, compact);
+  }, [input, output, canTree, format, isNonJsonInput, sanitizer.runSanitize]);
 
   useEffect(() => {
     setInputLang(undefined);
@@ -297,9 +323,9 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   };
 
   const handleCopy = async () => {
-    if (!output) return;
+    if (!shownOutput) return;
     try {
-      await navigator.clipboard.writeText(output);
+      await navigator.clipboard.writeText(shownOutput);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
@@ -308,8 +334,8 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
   };
 
   const handleDownload = () => {
-    if (!output) return;
-    const blob = new Blob([output], { type: 'text/plain;charset=utf-8' });
+    if (!shownOutput) return;
+    const blob = new Blob([shownOutput], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -320,12 +346,22 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
 
   const treeData = useMemo(() => {
     if (effectiveView !== 'tree') return null;
+    if (sanitizer.rawData !== null && sanitizer.rawData !== undefined) return sanitizer.rawData;
     try {
-      return JSON.parse(output);
+      return output ? JSON.parse(output) : null;
     } catch {
       return null;
     }
-  }, [output, effectiveView]);
+  }, [output, effectiveView, sanitizer.rawData]);
+
+  // Sanitized text when the feature is active; raw output when off or reverted.
+  const shownOutput = canTree
+    ? sanitizer.reverted
+      ? output
+      : sanitizer.sanitizedJson ?? output
+    : output;
+  const showSanitizerBanner =
+    canTree && sanitizer.banner && sanitizer.redactionCount > 0 && !sanitizer.reverted;
 
   const inputStats = useMemo(() => {
     return {
@@ -336,10 +372,10 @@ export default function EditorWorkspace({ toolId }: EditorWorkspaceProps) {
 
   const outputStats = useMemo(() => {
     return {
-      lines: output ? output.split('\n').length : 0,
-      bytes: output ? new Blob([output]).size : 0,
+      lines: shownOutput ? shownOutput.split('\n').length : 0,
+      bytes: shownOutput ? new Blob([shownOutput]).size : 0,
     };
-  }, [output]);
+  }, [shownOutput]);
 
 const minimalSetup = [
   lineNumbers(),
@@ -520,6 +556,11 @@ const minimalSetup = [
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline px-3 py-2">
             <span className="eyebrow">Output</span>
             <div className="flex items-center gap-1.5">
+              <SanitizerToolbar
+                enabled={sanitizer.enabled}
+                onToggle={() => sanitizer.setEnabled(!sanitizer.enabled)}
+                onManage={() => setManageOpen(true)}
+              />
               <label className="relative">
                 <span className="sr-only">Output format</span>
                 <ArrowDownUp
@@ -571,12 +612,20 @@ const minimalSetup = [
             </div>
           </div>
 
+          {showSanitizerBanner && (
+            <SanitizerBanner count={sanitizer.redactionCount} onUndo={sanitizer.undo} />
+          )}
+
           <div className="min-h-0 flex-1 overflow-hidden">
             {treeData !== null ? (
-              <JsonTree data={treeData} />
+              <JsonTree
+                data={treeData}
+                redactions={sanitizer.reverted ? {} : sanitizer.redactionMap}
+                onToggleKey={sanitizer.togglePath}
+              />
             ) : (
               <CmEditor
-                value={output}
+                value={shownOutput}
                 readOnly
                 extensions={outputExtensions}
                 placeholder="Your result will appear here…"
@@ -585,6 +634,16 @@ const minimalSetup = [
           </div>
         </div>
       </div>
+
+      <SanitizerModal
+        open={manageOpen}
+        onClose={() => setManageOpen(false)}
+        keys={sanitizer.keys}
+        autoDetected={sanitizer.autoDetected}
+        redactionMap={sanitizer.redactionMap}
+        customRules={sanitizer.customRules}
+        onApply={(ov, rules) => sanitizer.commit(ov, rules)}
+      />
 
       {/* ------------------------------ Status bar ----------------------------- */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-hairline bg-canvas px-3 py-2">

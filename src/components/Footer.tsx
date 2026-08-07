@@ -5,21 +5,22 @@ import { TOOL_LIST } from '@/config/tools';
 import logo from '@/assets/logo-mark.png';
 
 const RESOURCE_LINKS = [
-  { href: '/fix-json', label: 'Fix Broken JSON' },
-  { href: '/minify-json', label: 'Minify JSON' },
-  { href: '/json-to-csv', label: 'JSON to CSV' },
-  { href: '/csv-to-json', label: 'CSV to JSON' },
-  { href: '/json-to-yaml', label: 'JSON to YAML' },
-  { href: '/yaml-to-json', label: 'YAML to JSON' },
-  { href: '/json-to-typescript', label: 'JSON to TypeScript' },
-  { href: '/json-to-zod', label: 'JSON to Zod Schema' },
+  { href: '/fix-json/', label: 'Fix Broken JSON' },
+  { href: '/minify-json/', label: 'Minify JSON' },
+  { href: '/json-to-csv/', label: 'JSON to CSV' },
+  { href: '/csv-to-json/', label: 'CSV to JSON' },
+  { href: '/json-to-yaml/', label: 'JSON to YAML' },
+  { href: '/yaml-to-json/', label: 'YAML to JSON' },
+  { href: '/json-to-typescript/', label: 'JSON to TypeScript' },
+  { href: '/json-to-zod/', label: 'JSON to Zod Schema' },
+  { href: '/json-sanitizer/', label: 'JSON Secret Sanitizer' },
 ];
 
 const COMPANY_LINKS = [
-  { href: '/about', label: 'About Us' },
-  { href: '/contact', label: 'Contact Us' },
-  { href: '/privacy-policy', label: 'Privacy Policy' },
-  { href: '/terms', label: 'Terms & Conditions' },
+  { href: '/about/', label: 'About Us' },
+  { href: '/contact/', label: 'Contact Us' },
+  { href: '/privacy-policy/', label: 'Privacy Policy' },
+  { href: '/terms/', label: 'Terms & Conditions' },
 ];
 
 export default function Footer() {

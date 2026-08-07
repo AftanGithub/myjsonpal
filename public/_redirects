@@ -1,0 +1,13 @@
+/about /about/ 301
+/contact /contact/ 301
+/privacy-policy /privacy-policy/ 301
+/terms /terms/ 301
+/json-to-csv /json-to-csv/ 301
+/csv-to-json /csv-to-json/ 301
+/json-to-yaml /json-to-yaml/ 301
+/yaml-to-json /yaml-to-json/ 301
+/json-to-typescript /json-to-typescript/ 301
+/json-to-zod /json-to-zod/ 301
+/minify-json /minify-json/ 301
+/fix-json /fix-json/ 301
+/json-sanitizer /json-sanitizer/ 301

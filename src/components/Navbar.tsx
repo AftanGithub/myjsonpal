@@ -10,13 +10,14 @@ interface NavbarProps {
 
 const LINKS = [
   { href: '/', label: 'Formatter' },
-  { href: '/json-to-csv', label: 'CSV' },
-  { href: '/csv-to-json', label: 'CSV to JSON' },
-  { href: '/json-to-yaml', label: 'YAML' },
-  { href: '/yaml-to-json', label: 'YAML to JSON' },
-  { href: '/json-to-typescript', label: 'TS Types' },
-  { href: '/json-to-zod', label: 'Zod Schema' },
-  { href: '/minify-json', label: 'Minify' },
+  { href: '/json-to-csv/', label: 'CSV' },
+  { href: '/csv-to-json/', label: 'CSV to JSON' },
+  { href: '/json-to-yaml/', label: 'YAML' },
+  { href: '/yaml-to-json/', label: 'YAML to JSON' },
+  { href: '/json-to-typescript/', label: 'TS Types' },
+  { href: '/json-to-zod/', label: 'Zod Schema' },
+  { href: '/minify-json/', label: 'Minify' },
+  { href: '/json-sanitizer/', label: 'Secret Sanitizer' },
 ];
 
 export default function Navbar({ pathname }: NavbarProps) {
@@ -166,7 +167,7 @@ export default function Navbar({ pathname }: NavbarProps) {
               </a>
             ))}
             <a
-              href="/fix-json"
+              href="/fix-json/"
               onClick={() => setOpen(false)}
               className="rounded-md px-3 py-2 text-sm text-body hover:bg-elevated-2 hover:text-ink"
             >

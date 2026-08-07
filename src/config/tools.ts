@@ -134,7 +134,7 @@ const HOME_TOOL: ToolConfig = {
 
 const JSON_TO_CSV: ToolConfig = {
   id: 'json-to-csv',
-  path: '/json-to-csv',
+  path: '/json-to-csv/',
   eyebrow: 'Data Converter',
   h1: 'JSON to CSV Converter',
   tagline:
@@ -229,7 +229,7 @@ const JSON_TO_CSV: ToolConfig = {
 
 const JSON_TO_YAML: ToolConfig = {
   id: 'json-to-yaml',
-  path: '/json-to-yaml',
+  path: '/json-to-yaml/',
   eyebrow: 'Data Converter',
   h1: 'JSON to YAML Converter',
   tagline:
@@ -328,7 +328,7 @@ const JSON_TO_YAML: ToolConfig = {
 
 const JSON_TO_TYPESCRIPT: ToolConfig = {
   id: 'json-to-typescript',
-  path: '/json-to-typescript',
+  path: '/json-to-typescript/',
   eyebrow: 'Type Generator',
   h1: 'Convert JSON to TypeScript Interfaces',
   tagline:
@@ -416,7 +416,7 @@ const JSON_TO_TYPESCRIPT: ToolConfig = {
 
 const CSV_TO_JSON: ToolConfig = {
   id: 'csv-to-json',
-  path: '/csv-to-json',
+  path: '/csv-to-json/',
   eyebrow: 'Data Converter',
   h1: 'CSV to JSON Converter',
   tagline:
@@ -510,7 +510,7 @@ const CSV_TO_JSON: ToolConfig = {
 
 const YAML_TO_JSON: ToolConfig = {
   id: 'yaml-to-json',
-  path: '/yaml-to-json',
+  path: '/yaml-to-json/',
   eyebrow: 'Data Converter',
   h1: 'YAML to JSON Converter',
   tagline:
@@ -593,7 +593,7 @@ const YAML_TO_JSON: ToolConfig = {
 
 const JSON_TO_ZOD: ToolConfig = {
   id: 'json-to-zod',
-  path: '/json-to-zod',
+  path: '/json-to-zod/',
   eyebrow: 'Type Generator',
   h1: 'JSON to Zod Schema Generator',
   tagline:
@@ -675,7 +675,7 @@ const JSON_TO_ZOD: ToolConfig = {
 
 const MINIFY_JSON: ToolConfig = {
   id: 'minify-json',
-  path: '/minify-json',
+  path: '/minify-json/',
   eyebrow: 'Size Optimizer',
   h1: 'JSON Minifier & Compressor',
   tagline:
@@ -753,7 +753,7 @@ const MINIFY_JSON: ToolConfig = {
 
 const FIX_JSON: ToolConfig = {
   id: 'fix-json',
-  path: '/fix-json',
+  path: '/fix-json/',
   eyebrow: 'Repair Engine',
   h1: 'Magic Auto-Repair Broken JSON',
   tagline:
@@ -818,6 +818,99 @@ const FIX_JSON: ToolConfig = {
   ],
 };
 
+/* ------------------------------------------------------------------ */
+/*  JSON Secret & PII Sanitizer                                        */
+/* ------------------------------------------------------------------ */
+
+const JSON_SANITIZER: ToolConfig = {
+  id: 'json-sanitizer',
+  path: '/json-sanitizer/',
+  eyebrow: 'Privacy Tool',
+  h1: 'Free Online JSON Secret & PII Sanitizer',
+  tagline:
+    'Instantly detect, mask and replace API keys, JWTs, passwords, emails and PII in any JSON payload — 100% in your browser, zero uploads.',
+  metaTitle: 'Free Online JSON Secret & PII Sanitizer | Redact API Keys In-Browser — MyJSONPal',
+  metaDescription:
+    'Instantly detect, mask, and replace API keys, JWTs, passwords, and PII in JSON files with sample mock data. 100% client-side, zero server uploads.',
+  targetKeyword: 'Redact API Keys From JSON',
+  keywords: [
+    // Cluster 1: Primary high-intent (core page & titles)
+    'redact api key from json',
+    'sanitize json online',
+    'json credential masker',
+    'json pii remover',
+    'anonymize json file',
+    'json secret sanitizer',
+    // Cluster 2: Developer AI & privacy (high-traffic trend)
+    'sanitize json before chatgpt',
+    'scrub json for llm prompts',
+    'redact json secrets online',
+    'client side json anonymizer',
+    'mask passwords in json file',
+    // Cluster 3: Technical & data-specific (for H2s and FAQs)
+    'mask jwt token in json',
+    'redact database connection string json',
+    'in browser json pii scrubber',
+    'remove bearer tokens from json',
+    'convert json secrets to sample data',
+  ],
+  defaultFormat: 'json',
+  defaultAction: 'format',
+  fileName: 'sanitized',
+  sample:
+    '{"user":{"name":"Ada Lovelace","email":"ada@example.com","password":"hunter2-secret","phone":"+1-202-555-0148"},"auth":{"apiKey":"sk_live_4eC39HqLyjWDarjtT1zdp7dc","accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkYSIsImlhdCI6MTUxNjIzOTAyMn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"},"database":{"connectionString":"postgresql://dbadmin:S3cretPass@db.internal:5432/prod","checksum":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},"meta":{"env":"production","public":false}}',
+  intro: [
+    'Sharing JSON before you scrub it is how secrets leak: API keys end up in public GitHub issues, credentials get pasted into ChatGPT prompts, and connection strings surface in stack traces. MyJSONPal\'s sanitizer catches them before you paste.',
+    'The engine combines key-name rules, known token patterns (Stripe, OpenAI, AWS, JWTs, GitHub), connection-string parsing, Shannon entropy scanning, and PII detectors for emails, phones, credit cards and SSNs — all running locally in a Web Worker so your data never leaves your device.',
+    'Use the Keys manager to force-redact anything the auto-detector missed, add persistent custom rules, and copy or download the clean result in one click.',
+  ],
+  howToTitle: 'How to sanitize a JSON file',
+  howTo: [
+    'Paste your JSON payload into the input editor, or drag and drop a .json file anywhere on the input pane.',
+    'Auto-Sanitize is on by default — the engine scans every key and value and replaces secrets with safe placeholder values.',
+    'Open the Keys manager to review detected secrets, add custom rules, or force-redact additional keys.',
+    'Copy the clean JSON to your clipboard or download it as a .json file.',
+  ],
+  faqs: [
+    {
+      q: 'Does my JSON ever get sent to a server?',
+      a: 'Never. Every scan runs locally in your browser inside a Web Worker. There are no network requests, no uploads, and no analytics beacons — your data never leaves your device.',
+    },
+    {
+      q: 'What keys and token formats are automatically detected?',
+      a: 'The engine flags secret-like keys (password, apiKey, token, secret, authorization…), known token formats (JWT, Stripe, OpenAI, AWS, GitHub, Slack, Supabase, Anthropic), connection strings (PostgreSQL, MySQL, MongoDB, Redis, AMQP), hex hashes, emails, phones, credit cards, SSNs, IPs, addresses, and high-entropy strings that look like keys.',
+    },
+    {
+      q: 'How do I sanitize custom sensitive keys not caught automatically?',
+      a: 'Click the Keys button in the output toolbar. There you can toggle any parsed key to force-redact it, and add persistent custom rules — plain substrings, *_wildcards, or /regex/ — that are applied across sessions and saved only in your browser.',
+    },
+    {
+      q: 'Can I revert to the original un-sanitized JSON if needed?',
+      a: 'Yes. Toggle Auto-Sanitize off at any time, or use the Revert to Raw Paste banner that appears after a sanitization to restore the original values immediately.',
+    },
+    {
+      q: 'Will sanitizing my JSON break its structure or invalidate my JSON schema?',
+      a: 'No. Secrets are replaced with same-type mock data — strings become placeholder strings, numbers become 0, booleans stay booleans — so every key, array, and nesting level is preserved and the output remains valid JSON that still matches your schema.',
+    },
+    {
+      q: 'Why should I mask sensitive data in JSON before sharing it on Slack, Teams, or GitHub?',
+      a: 'Public channels are crawled by bots that harvest API keys and credentials within minutes. A leaked key in a message, log, or issue can be abused before you notice. Masking first keeps your tokens safe while still sharing the shape of the data.',
+    },
+    {
+      q: 'Can I revert or un-sanitize my JSON back to its original values?',
+      a: 'Yes. Flip the Auto-Sanitize toggle in the output toolbar to hide redaction, or click Revert to Raw Paste in the banner that appears after sanitization to instantly bring back the original values.',
+    },
+    {
+      q: 'Can I download or copy the sanitized JSON directly?',
+      a: 'Absolutely. The output pane has one-click Copy to Clipboard and Download buttons, so you can grab the clean JSON as a .json file or paste it straight into Slack, Teams, GitHub, or an LLM prompt.',
+    },
+    {
+      q: 'How does the sanitizer handle nested objects and large JSON arrays?',
+      a: 'The scan runs recursively in a Web Worker, so deeply nested objects and large arrays are walked without freezing the interface. The engine detects secrets at every level — including inside array items — while keeping the UI responsive.',
+    },
+  ],
+};
+
 export const TOOLS: Record<string, ToolConfig> = {
   [HOME_TOOL.id]: HOME_TOOL,
   [JSON_TO_CSV.id]: JSON_TO_CSV,
@@ -828,6 +921,7 @@ export const TOOLS: Record<string, ToolConfig> = {
   [JSON_TO_ZOD.id]: JSON_TO_ZOD,
   [MINIFY_JSON.id]: MINIFY_JSON,
   [FIX_JSON.id]: FIX_JSON,
+  [JSON_SANITIZER.id]: JSON_SANITIZER,
 };
 
 export const TOOL_LIST: ToolConfig[] = [
@@ -840,4 +934,5 @@ export const TOOL_LIST: ToolConfig[] = [
   JSON_TO_ZOD,
   MINIFY_JSON,
   FIX_JSON,
+  JSON_SANITIZER,
 ];

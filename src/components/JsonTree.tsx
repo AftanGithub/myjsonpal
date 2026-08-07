@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, EyeOff, Lock } from 'lucide-react';
 
 const MAX_KEYS = 400;
 
-function Primitive({ value }: { value: unknown }) {
+function Primitive({ value, masked }: { value: unknown; masked?: boolean }) {
   if (value === null) {
     return <span className="font-mono text-[13px] text-faint">null</span>;
   }
   switch (typeof value) {
     case 'string':
       return (
-        <span className="break-all font-mono text-[13px] text-success">
+        <span
+          className={`break-all font-mono text-[13px] ${
+            masked ? 'text-warning' : 'text-success'
+          }`}
+        >
           &quot;{String(value)}&quot;
         </span>
       );
@@ -23,15 +27,16 @@ function Primitive({ value }: { value: unknown }) {
   }
 }
 
-function Node({
-  name,
-  value,
-  depth,
-}: {
+interface NodeProps {
   name: string;
   value: unknown;
   depth: number;
-}) {
+  path: string;
+  redactions?: Record<string, unknown>;
+  onToggleKey?: (path: string) => void;
+}
+
+function Node({ name, value, depth, path, redactions, onToggleKey }: NodeProps) {
   const isArray = Array.isArray(value);
   const isObject = value !== null && typeof value === 'object' && !isArray;
   const expandable = isArray || isObject;
@@ -39,13 +44,32 @@ function Node({
   const pad = { paddingLeft: `${8 + depth * 14}px` };
 
   if (!expandable) {
+    const masked = redactions?.[path] !== undefined;
+    const shown = masked ? redactions?.[path] : value;
+    const toggleable =
+      onToggleKey !== undefined && (typeof value === 'string' || typeof value === 'number');
     return (
       <div
-        className="flex items-baseline gap-1.5 rounded-sm px-2 py-[2px] hover:bg-elevated-2"
+        className="group flex items-center gap-1.5 rounded-sm px-2 py-[2px] hover:bg-elevated-2"
         style={pad}
       >
-        <span className="text-[13px] text-body">{name}:</span>
-        <Primitive value={value} />
+        <span className="truncate text-[13px] text-body">{name}:</span>
+        <Primitive value={shown} masked={masked} />
+        {toggleable && (
+          <button
+            type="button"
+            onClick={() => onToggleKey(path)}
+            className="ml-auto shrink-0 p-0.5 text-mute hover:text-ink"
+            title={masked ? 'Show raw value' : 'Hide this value'}
+            aria-label={masked ? `Show raw value for ${path}` : `Hide value for ${path}`}
+          >
+            {masked ? (
+              <Lock className="h-3 w-3 text-warning" aria-hidden="true" />
+            ) : (
+              <EyeOff className="h-3 w-3 text-faint opacity-0 transition-opacity group-hover:opacity-100" />
+            )}
+          </button>
+        )}
       </div>
     );
   }
@@ -70,7 +94,7 @@ function Node({
         ) : (
           <ChevronRight className="h-3.5 w-3.5 shrink-0 text-mute" aria-hidden="true" />
         )}
-        <span className="text-[13px] font-medium text-ink">{name}</span>
+        <span className="truncate text-[13px] font-medium text-ink">{name}</span>
         <span className="font-mono text-[11px] text-faint">
           {isArray ? `Array(${entries.length})` : 'Object'}
         </span>
@@ -78,7 +102,15 @@ function Node({
       {open && (
         <div>
           {shown.map(([k, v]) => (
-            <Node key={k} name={k} value={v} depth={depth + 1} />
+            <Node
+              key={k}
+              name={k}
+              value={v}
+              depth={depth + 1}
+              path={path ? `${path}.${k}` : k}
+              redactions={redactions}
+              onToggleKey={onToggleKey}
+            />
           ))}
           {truncated && (
             <div
@@ -94,10 +126,27 @@ function Node({
   );
 }
 
-export default function JsonTree({ data }: { data: unknown }) {
+interface JsonTreeProps {
+  data: unknown;
+  redactions?: Record<string, unknown>;
+  onToggleKey?: (path: string) => void;
+}
+
+export default function JsonTree({
+  data,
+  redactions,
+  onToggleKey,
+}: JsonTreeProps) {
   return (
     <div className="h-full overflow-auto p-2">
-      <Node name="root" value={data} depth={0} />
+      <Node
+        name="root"
+        value={data}
+        depth={0}
+        path=""
+        redactions={redactions}
+        onToggleKey={onToggleKey}
+      />
     </div>
   );
 }

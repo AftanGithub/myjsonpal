@@ -34,14 +34,15 @@ export const GET: APIRoute = () => {
   ];
 
   const urls = entries
-    .map(
-      (entry) => `  <url>
-    <loc>${base}${entry.path === '/' ? '' : entry.path}</loc>
+    .map((entry) => {
+      const loc = `${base}${entry.path === '/' ? '/' : `${entry.path.replace(/\/+$/, '')}/`}`;
+      return `  <url>
+    <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority.toFixed(1)}</priority>
-  </url>`,
-    )
+  </url>`;
+    })
     .join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

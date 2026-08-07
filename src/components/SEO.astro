@@ -22,7 +22,8 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = `${SITE.url}${path}`.replace(/\/+$/, '');
+const canonicalPath = path === '/' ? '/' : `${path.replace(/\/+$/, '')}/`;
+const canonical = `${SITE.url}${canonicalPath}`;
 const metaTitle = tool ? tool.metaTitle : (title ?? SITE.name);
 const metaDescription = tool ? tool.metaDescription : (description ?? SITE.description);
 const metaKeywords = tool ? tool.keywords : (keywords ?? []);
@@ -34,14 +35,14 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${SITE.url}/#website`,
-  url: SITE.url,
+  url: `${SITE.url}/`,
   name: SITE.name,
   description: SITE.description,
   inLanguage: 'en',
   publisher: {
     '@type': 'Organization',
     name: SITE.name,
-    url: SITE.url,
+    url: `${SITE.url}/`,
   },
 };
 
@@ -50,7 +51,7 @@ const applicationSchema = {
   '@type': 'SoftwareApplication',
   '@id': `${SITE.url}/#application`,
   name: SITE.name,
-  url: SITE.url,
+  url: `${SITE.url}/`,
   description: SITE.description,
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'All',

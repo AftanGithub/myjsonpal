@@ -8,6 +8,7 @@ import mcp from 'astro-mcp';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://myjsonpal.com',
+  trailingSlash: 'always',
   integrations: [react(), mcp()],
   vite: {
     plugins: [tailwindcss()],
